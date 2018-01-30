@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ fragment_realtime xml
+  ~ Created by G.Capelli (BasicAirData) on 14/5/2017
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentRealtime">
+
+    <RelativeLayout
+        android:id="@+id/id_realtime_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/id_card_airspeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="3dp"
+        card_view:cardElevation="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="3dp"
+        card_view:cardUseCompatPadding="true">
+
+        <TableLayout
+            android:id="@+id/id_TableLayout_airspeed"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp">
+
+            <TextView
+                android:id="@+id/id_textView_airspeed_Label"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/true_airspeed"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal" />
+
+            <LinearLayout
+                android:id="@+id/id_card_doubleUM"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:weightSum="2"
+                android:baselineAligned="false">
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginRight="4.5dp"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/id_textView_airspeed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceLargeNumbers"
+                        android:freezesText="true"
+                        android:textColor="@color/colorPrimary"
+                        android:gravity="center_horizontal" />
+
+                    <TextView
+                        android:id="@+id/id_textView_airspeedUM"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceLargeUM"
+                        android:text="@string/m_s"
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp"/>
+                </TableRow>
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="4.5dp"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/id_textView_airspeed2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceLargeNumbers"
+                        android:freezesText="true"/>
+
+                    <TextView
+                        android:id="@+id/id_textView_airspeedUM2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceLargeUM"
+                        android:text="@string/km_h"
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp"/>
+                </TableRow>
+            </LinearLayout>
+        </TableLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/id_card_temperature_altitude"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_card_airspeed"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:weightSum="2"
+        android:baselineAligned="false">
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/card_temperature"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardElevation="3dp"
+            android:layout_weight="1"
+            android:layout_marginRight="1.5dp"
+            card_view:cardUseCompatPadding="true">
+
+            <TableLayout
+                android:id="@+id/id_tableLayout_temperature"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp">
+
+                <TextView
+                    android:id="@+id/id_textView_temperature_Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/temperature"
+                    android:gravity="center_horizontal" />
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal" >
+
+                    <TextView
+                        android:id="@+id/id_textView_temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceLargeNumbers"
+                        android:freezesText="true"/>
+
+                    <TextView
+                        android:id="@+id/id_textView_temperatureUM"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceLargeUM"
+                        android:layout_marginLeft="7dp"
+                        android:text="@string/degk"
+                        android:layout_marginStart="7dp" />
+                </TableRow>
+            </TableLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/card_altitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardElevation="3dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="1.5dp"
+            card_view:cardUseCompatPadding="true">
+
+            <TableLayout
+                android:id="@+id/id_tableLayout_altitude"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp">
+
+                <TextView
+                    android:id="@+id/id_textView_altitude_Label"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/altitude"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal" />
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal" >
+
+                    <TextView
+                        android:id="@+id/id_textView_altitude"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceLargeNumbers"
+                        android:freezesText="true"/>
+
+                    <TextView
+                        android:id="@+id/id_textView_altitudeUM"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceLargeUM"
+                        android:layout_marginLeft="7dp"
+                        android:text="@string/m"
+                        android:layout_marginStart="7dp" />
+                </TableRow>
+            </TableLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/id_linearlayout_datalabels"
+        android:layout_below="@id/id_card_temperature_altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+
+        <TextView
+            android:id="@+id/id_textView_datetime_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/datetime"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/id_textView_timesync_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/timesync"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/id_textView_absolute_pressure_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/absolute_pressure"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/id_textView_differential_pressure_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/differential_pressure"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/id_textView_dynamic_air_viscosity_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/air_viscosity"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/id_textView_air_density_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/air_density"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/id_linearlayout_data"
+        android:orientation="vertical"
+        android:layout_toRightOf="@id/id_linearlayout_datalabels"
+        android:layout_alignTop="@id/id_linearlayout_datalabels"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/id_textView_datetime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:text="-"
+            android:textColor="@color/colorTextStrong"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/id_textView_timesync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:text="No Sync"
+            android:textColor="@color/colorTextStrong"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/id_textView_absolute_pressure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="2dp"
+            android:text="-"
+            android:textColor="@color/colorTextStrong"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/id_textView_differential_pressure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:text="-"
+            android:textColor="@color/colorTextStrong"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/id_textView_dynamic_air_viscosity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:text="-"
+            android:textColor="@color/colorTextStrong"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/id_textView_air_density"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:text="-"
+            android:textColor="@color/colorTextStrong"
+            android:maxLines="1" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorCardBackground"
+        android:padding="3dp"
+        tools:context=".FragmentRealtime">
+
+        <ImageView
+            android:id="@+id/id_imageview_status"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_visibility_off_black_24dp"
+            android:padding="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/id_textView_status_hz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_toLeftOf="@id/id_imageview_status"
+            android:layout_centerVertical="true"
+            android:text="@string/realtime_disabled"
+            android:textColor="@color/colorTextStrong"
+            android:maxLines="1" />
+
+    </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/id_textView_realtimedisabled"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:gravity="center"
+        android:paddingTop="30dp"
+        android:text="@string/realtime_not_connected" />
+
+</RelativeLayout>

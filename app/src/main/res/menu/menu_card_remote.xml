@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ menu_card_remote xml
+  ~ Created by G.Capelli (BasicAirData) on 20/01/2018
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="eu.basicairdata.airdatabridge.AirDataBridgeActivity">
+    <item android:id="@+id/cardmenu_remote_start_recording" android:visible="false" android:title="@string/card_menu_start_recording" />
+    <item android:id="@+id/cardmenu_remote_download" android:visible="false" android:title="@string/card_menu_download" />
+    <item android:id="@+id/cardmenu_remote_stop_recording" android:visible="false" android:title="@string/card_menu_stop_recording" />
+    <item android:id="@+id/cardmenu_remote_delete" android:visible="false" android:title="@string/card_menu_delete" />
+</menu>

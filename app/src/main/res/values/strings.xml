@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ strings xml
+  ~ Created by G.Capelli (BasicAirData) on 14/5/2017
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="app_name">Air Data Bridge</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_new_logfile">New Log</string>
+    <string name="action_sync">Sync</string>
+
+    <!-- Tabs -->
+    <string name="tab_adcstatus">REAL TIME</string>
+    <string name="true_airspeed">True Airspeed</string>
+    <string name="altitude">Altitude</string>
+    <string name="temperature">Temperature</string>
+    <string name="datetime">Datetime</string>
+    <string name="timesync">Time Sync</string>
+    <string name="absolute_pressure">Absolute pressure</string>
+    <string name="differential_pressure">Differential pressure</string>
+    <string name="air_density">Air Density</string>
+    <string name="air_viscosity">Air Viscosity</string>
+    <string name="realtime_disabled">Disabled</string>
+    <string name="realtime_update_at_hz">Frequency %1$s Hz</string>
+    <string name="realtime_not_connected">Air Data Computer not connected\n\nWhen the ADC is connected\non this tab you can view the data\nin real time</string>
+
+    <string name="tab_remote_loglist">REMOTE</string>
+    <string name="remote_sd_not_connected">Air Data Computer not connected\n\nWhen the ADC is connected\non this tab you can manage the Log Files\nof the remote SDCard</string>
+    <string name="remote_sd_empty">The remote SDCard is empty</string>
+    <string name="remote_sd_not_present">Remote SDCard not present</string>
+
+    <string name="tab_local_loglist">LOCAL</string>
+    <string name="local_archive_empty">The local archive is empty</string>
+    <string name="local_archive_permission_denied">The app hasn\'t the permission\nto access to the local storage</string>
+
+    <!-- Bluetooth Status -->
+    <string name="status_bt_connected_with">Connected to %1$s - v.%2$s</string>
+    <string name="status_bt_connected">Connected</string>
+    <string name="status_bt_connecting">Looking for Air Data Computer ...</string>
+    <string name="status_bt_disconnected">Disconnected</string>
+    <string name="status_bt_off">Bluetooth disabled</string>
+
+    <!-- Cards -->
+    <string name="card_recording">RECORDING</string>
+
+    <!-- Card menu -->
+    <string name="card_menu_start_recording">Start Recording</string>
+    <string name="card_menu_stop_recording">Stop Recording</string>
+    <string name="card_menu_download">Download</string>
+    <string name="card_menu_delete">Delete</string>
+
+    <!-- Dialogs -->
+    <string name="card_message_delete_remote_file_confirmation">Do you really want to delete this File from the Air Data Computer?</string>
+    <string name="card_message_delete_local_file_confirmation">Do you really want to delete this Local File?</string>
+    <string name="dlg_new_remote_logfile_title">New Remote Log file</string>
+    <string name="dlg_new_local_logfile_title">New Local Recording</string>
+    <string name="dlg_download_the_file">Downloading %1$s ...</string>
+    <string name="ok">Ok</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Units of measurement -->
+    <string name="m_s">m/s</string>
+    <string name="km_h">km/h</string>
+    <string name="degk">K</string>
+    <string name="m">m</string>
+    <string name="Pa">Pa</string>
+    <string name="kg_m3">kg/m³</string>
+    <string name="Paxs">Pa·s</string>
+
+
+</resources>
