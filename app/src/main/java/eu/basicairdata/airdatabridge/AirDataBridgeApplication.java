@@ -101,9 +101,6 @@ public class AirDataBridgeApplication extends Application {
     public void setStatusViewEnabled(boolean statusViewEnabled) {
         StatusViewEnabled = statusViewEnabled;
     }
-    public boolean isDumpMode() {
-        return DumpMode;
-    }
     public boolean isDownloadDialogVisible() {
         return DownloadDialogVisible;
     }
@@ -161,7 +158,6 @@ public class AirDataBridgeApplication extends Application {
 
     boolean isCommTimeoutHandler = false;                                   // True if the CommTimeoutHandler is active
 
-
     BluetoothHelper mBluetooth = new BluetoothHelper();
     BluetoothAdapter mBluetoothAdapter = null;
 
@@ -201,8 +197,6 @@ public class AirDataBridgeApplication extends Application {
     public static AirDataBridgeApplication getInstance(){
         return singleton;
     }
-
-    //private List<Track> _ArrayListTracks = new ArrayList<>();
 
 
     @Override
@@ -264,25 +258,22 @@ public class AirDataBridgeApplication extends Application {
                                 }
                                 startCommTimeout();
                             }
-                            //int ds = (DownloadedSize / CurrentRemoteDownload.lsize);
                         }
                         return;
                     }
 
-                    if (message.startsWith("$DFA,") && !DownloadDialogVisible) {   // ----------------------------------------------- $DFA
+                    if (message.startsWith("$DFA,") && !DownloadDialogVisible) {   // --------------------- $DFA
                         StringTokenizer tokens = new StringTokenizer(message, ",");
                         if (tokens.countTokens() == 4) {
                             stopCommTimeout();
                             tokens.nextToken();                                         // Command $DFA
-                            SerialDTAFrequency = Float.parseFloat(tokens.nextToken());  // Serial frequency, not useful
-                            String freqvalue;
+                            SerialDTAFrequency = Float.parseFloat(tokens.nextToken());  // Serial frequency
                             float newBTvalue = BluetoothDTAFrequency;
                             float newSDvalue = SDCardDTAFrequency;
-
-                            freqvalue = tokens.nextToken();                             // Bluetooth Frequency
-                            if (!freqvalue.equals("=")) newBTvalue = Float.parseFloat(freqvalue);
-                            freqvalue = tokens.nextToken();                             // SDCard Frequency
-                            if (!freqvalue.equals("=")) newSDvalue = Float.parseFloat(freqvalue);
+                            String BTfreqvalue = tokens.nextToken();                      // Bluetooth Frequency
+                            if (!BTfreqvalue.equals("=")) newBTvalue = Float.parseFloat(BTfreqvalue);
+                            BTfreqvalue = tokens.nextToken();                             // SDCard Frequency
+                            if (!BTfreqvalue.equals("=")) newSDvalue = Float.parseFloat(BTfreqvalue);
 
 
                             SDCardDTAFrequency = newSDvalue;
@@ -291,7 +282,6 @@ public class AirDataBridgeApplication extends Application {
                                 mBluetooth.SendMessage("$FMQ,LST");
                                 startCommTimeout();
                                 ForceRemoteLST = false;
-                                //mBluetooth.SendMessage("$FMQ,PRP," + CurrentRemoteLogFile.Name + "." + CurrentRemoteLogFile.Extension);
                             } else {
                                 mBluetooth.SendMessage("$LCQ");
                                 startCommTimeout();
@@ -306,7 +296,6 @@ public class AirDataBridgeApplication extends Application {
                                 } else {
                                     StatusViewEnabled = true;
                                     EventBus.getDefault().post(EventBusMSG.ENABLE_REALTIME_VIEW);
-                                    //BluetoothDTAFrequency = newBTvalue;
                                 }
                             }
                         }
@@ -471,7 +460,6 @@ public class AirDataBridgeApplication extends Application {
 
                             }
                         }
-
                         EventBus.getDefault().post(EventBusMSG.START_DOWNLOAD);
                         return;
                     }
@@ -519,6 +507,7 @@ public class AirDataBridgeApplication extends Application {
                     }
                 }
             }
+
 
             @Override
             public void onBluetoothHelperConnectionStateChanged(BluetoothHelper bluetoothhelper,
@@ -568,6 +557,7 @@ public class AirDataBridgeApplication extends Application {
         super.onTerminate();
     }
 
+
     @Subscribe
     public void onEvent(Short msg) {
         switch (msg) {
@@ -576,10 +566,7 @@ public class AirDataBridgeApplication extends Application {
                 startCommTimeout();
                 break;
             case EventBusMSG.BLUETOOTH_CONNECTING:
-                synchronized(LogfileList_Remote) {
-                    //LogfileList_Remote.clear();
-                    EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
-                }
+                EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
                 break;
             case EventBusMSG.REMOTE_REQUEST_SYNC:
                 ForceRemoteLST = true;
@@ -616,6 +603,7 @@ public class AirDataBridgeApplication extends Application {
                 break;
         }
     }
+
 
     @Subscribe
     public void onEvent(final EventBusMSGLogFile msg) {

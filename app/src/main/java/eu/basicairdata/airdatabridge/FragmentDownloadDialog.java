@@ -51,11 +51,8 @@ public class FragmentDownloadDialog extends DialogFragment {
         dwFile = ADBApplication.getCurrentRemoteDownload();
         Log.w("myApp", "[#] FragmentDownloadDialog: REQUEST_START_DOWNLOAD = " + dwFile.Name);
 
-        //downloadAlert.setTitle(R.string.card_menu_download);
-        //downloadAlert.setIcon(R.drawable.ic_add_white_24dp);
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = (View) inflater.inflate(R.layout.fragment_downloaddialog, null);
+        final View view = inflater.inflate(R.layout.fragment_downloaddialog, null);
 
         TVDownloadDesc = (TextView) view.findViewById(R.id.id_downloaddialog_desc);
         TVDownloadPercent = (TextView) view.findViewById(R.id.id_downloaddialog_percent);
@@ -65,29 +62,6 @@ public class FragmentDownloadDialog extends DialogFragment {
         TVDownloadDesc.setText(getResources().getString(R.string.dlg_download_the_file, dwFile.Name));
 
         downloadAlert.setView(view)
-
-                //.setPositiveButton(R.string.conti_nue, new DialogInterface.OnClickListener() {
-                /*.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (isAdded()) {
-                            String FileDescription;
-                            if (DescEditText.getText().length() != 0) {
-                                FileDescription = DescEditText.getText().toString().trim().toUpperCase();
-                                if (FileDescription.length() > 8) FileDescription = FileDescription.substring(0, 8);
-                            } else {
-                                FileDescription = DescEditText.getHint().toString();
-                            }
-                            if(!FileDescription.isEmpty()) {
-                                FileDescription += ".CSV";
-                                LogFile lg = new LogFile(FileDescription, "0", "0");
-                                EventBus.getDefault().post(new EventBusMSGLogFile(EventBusMSG.REMOTE_FILE_NEW, lg));
-                            }
-                        }
-                    }
-                })*/
-                //.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 
                     @Override
@@ -101,7 +75,6 @@ public class FragmentDownloadDialog extends DialogFragment {
 
     @Override
     public void onResume() {
-        //Log.w("myApp", "[#] FragmentLogList_Remote: onResume()");
         if (!ADBApplication.isDownloadDialogVisible()) this.dismiss();
         EventBus.getDefault().register(this);
         Update();
@@ -125,14 +98,6 @@ public class FragmentDownloadDialog extends DialogFragment {
             this.dismiss();
         }
         if ((msg == EventBusMSG.UPDATE_DOWNLOAD_PROGRESS) && isAdded()) Update();
-        /*if (msg == EventBusMSG.END_DOWNLOAD) {
-            (getActivity()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Update();
-                }
-            });
-        }*/
     }
 
     void Update() {

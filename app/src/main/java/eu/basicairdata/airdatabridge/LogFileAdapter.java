@@ -37,10 +37,6 @@ import java.util.List;
 
 class LogFileAdapter extends RecyclerView.Adapter<LogFileAdapter.LogFileHolder> {
 
-    //private final static int NOT_AVAILABLE = -100000;
-    //private final static int CARDTYPE_CURRENTTRACK = 0;
-    //private final static int CARDTYPE_TRACK = 1;
-
     private List<LogFile> dataSet;
 
 
@@ -125,11 +121,6 @@ class LogFileAdapter extends RecyclerView.Adapter<LogFileAdapter.LogFileHolder> 
     public LogFileHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new LogFileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.card_logfileinfo, parent, false));
     }
-
-
-    //public int getItemViewType (int position) {
-    //    return (position == 0) && GPSApplication.getInstance().isCurrentTrackVisible() ? CARDTYPE_CURRENTTRACK : CARDTYPE_TRACK;
-    //}
 
 
     @Override
