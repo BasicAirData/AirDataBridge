@@ -18,13 +18,14 @@
 
 package eu.basicairdata.airdatabridge;
 
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 import android.util.Log;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class FragmentSettings extends PreferenceFragment {
 
@@ -36,11 +37,9 @@ public class FragmentSettings extends PreferenceFragment {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         addPreferencesFromResource(R.xml.app_preferences);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-
         SetupPreferences();
     }
 
@@ -55,7 +54,7 @@ public class FragmentSettings extends PreferenceFragment {
     public void onPause() {
         prefs.unregisterOnSharedPreferenceChangeListener(prefListener);
         Log.w("myApp", "[#] FragmentSettings.java - onPause");
-        //EventBus.getDefault().post(EventBusMSG.UPDATE_SETTINGS);
+        EventBus.getDefault().post(EventBusMSG.UPDATE_SETTINGS);
         super.onPause();
     }
 

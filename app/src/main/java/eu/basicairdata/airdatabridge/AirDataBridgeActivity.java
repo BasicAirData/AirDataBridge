@@ -21,13 +21,14 @@ package eu.basicairdata.airdatabridge;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -43,7 +44,6 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +57,7 @@ public class AirDataBridgeActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private TextView TVStatus;
 
+    private boolean prefKeepScreenOn = true;
 
 
     @Override
@@ -75,9 +76,6 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.id_tablayout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setupWithViewPager(mViewPager);
-
-        // Set the "Keeps the screen on" flag
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -106,6 +104,7 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
         //Log.w("myApp", "[#] AirDataBridgeActivity.java - onResume()");
         EventBus.getDefault().post(EventBusMSG.APP_RESUME);
+        LoadPreferences();
         Update();
         super.onResume();
     }
@@ -260,7 +259,7 @@ public class AirDataBridgeActivity extends AppCompatActivity {
 
                     if (perms.containsKey(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                            Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_GRANTED");
+                            Log.w("myApp", "[#] AirDataBridgeActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_GRANTED");
                             EventBus.getDefault().post(EventBusMSG.STORAGE_PERMISSION_GRANTED);
                         }
                         //AirDataBridgeApplication.getInstance().setStoragePermissionChecked(true);
@@ -296,6 +295,19 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         }
     }
 
+
+    private void LoadPreferences() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        prefKeepScreenOn = preferences.getBoolean("prefKeepScreenOn", true);
+        if (prefKeepScreenOn) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            //Log.w("myApp", "[#] AirDataBridgeActivity.java - addFlags FLAG_KEEP_SCREEN_ON");
+        }
+        else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            //Log.w("myApp", "[#] AirDataBridgeActivity.java - clearFlags FLAG_KEEP_SCREEN_ON");
+        }
+    }
 
 
     void Update() {

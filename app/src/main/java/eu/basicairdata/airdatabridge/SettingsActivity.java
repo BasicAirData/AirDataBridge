@@ -1,4 +1,4 @@
-/*
+/**
  * SettingsActivity - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 3/2/2018
  *

@@ -77,6 +77,11 @@
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
 
+    <!-- Settings -->
+    <string name="pref_category_interface">INTERFACE</string>
+    <string name="pref_keep_screen_on">Keep Screen On</string>
+    <string name="pref_keep_screen_on_summary">Battery drains faster</string>
+
     <!-- Units of measurement -->
     <string name="m_s">m/s</string>
     <string name="km_h">km/h</string>

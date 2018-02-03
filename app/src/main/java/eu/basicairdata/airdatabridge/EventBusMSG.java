@@ -63,4 +63,5 @@ public class EventBusMSG {
     static final short LOCAL_REQUEST_SYNC               =  112;  // A synchronization is requested
 
     static final short UPDATE_DOWNLOAD_PROGRESS         =  200;
+    static final short UPDATE_SETTINGS                  =  201;  // Signal to update (read) preferences
 }

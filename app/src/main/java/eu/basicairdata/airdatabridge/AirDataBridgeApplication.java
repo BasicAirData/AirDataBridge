@@ -627,6 +627,10 @@ public class AirDataBridgeApplication extends Application {
                 mBluetooth.SendMessage("$DFQ");
                 startCommTimeout();
                 break;
+            case EventBusMSG.UPDATE_SETTINGS:
+                Log.w("myApp", "[#] AirDataBridgeApplication.java - UPDATE SETTINGS");
+                LoadPreferences();
+                break;
         }
     }
 
@@ -708,6 +712,12 @@ public class AirDataBridgeApplication extends Application {
                 }
                 break;
         }
+    }
+
+
+    private void LoadPreferences() {
+        //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //EventBus.getDefault().post(EventBusMSG.APPLY_SETTINGS);
     }
 
 
