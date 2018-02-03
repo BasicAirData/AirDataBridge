@@ -23,5 +23,6 @@
     tools:context="eu.basicairdata.airdatabridge.AirDataBridgeActivity">
     <item android:id="@+id/cardmenu_local_start_recording" android:visible="false" android:title="@string/card_menu_start_recording" />
     <item android:id="@+id/cardmenu_local_stop_recording" android:visible="false" android:title="@string/card_menu_stop_recording" />
+    <item android:id="@+id/cardmenu_local_share" android:visible="false" android:title="@string/card_menu_share" />
     <item android:id="@+id/cardmenu_local_delete" android:visible="false" android:title="@string/card_menu_delete" />
 </menu>

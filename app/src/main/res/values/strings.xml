@@ -62,6 +62,7 @@
     <!-- Card menu -->
     <string name="card_menu_start_recording">Start Recording</string>
     <string name="card_menu_stop_recording">Stop Recording</string>
+    <string name="card_menu_share">Share with ...</string>
     <string name="card_menu_download">Download</string>
     <string name="card_menu_delete">Delete</string>
 

@@ -20,7 +20,10 @@
 package eu.basicairdata.airdatabridge;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -38,6 +41,7 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -132,16 +136,9 @@ public class FragmentLogList_Local extends Fragment {
         inflater.inflate(R.menu.menu_card_local, menu);
         //menu.setHeaderTitle(SelectedLogFile.Name);
 
-        if (AirDataBridgeApplication.getInstance().getSDCardDTAFrequency() != 0) {    // REC
-            if (SelectedLogFile.Current) {
-                //menu.findItem(R.id.cardmenu_local_stop_recording).setVisible(true);
-            } else {
-                menu.findItem(R.id.cardmenu_local_delete).setVisible(true);
-            }
-        } else {
-            //menu.findItem(R.id.cardmenu_local_start_recording).setVisible(true);
-            menu.findItem(R.id.cardmenu_local_delete).setVisible(true);
-        }
+        //menu.findItem(R.id.cardmenu_local_start_recording).setVisible(true);
+        menu.findItem(R.id.cardmenu_local_delete).setVisible(true);
+        menu.findItem(R.id.cardmenu_local_share).setVisible(true);
 
     }
 
@@ -173,6 +170,39 @@ public class FragmentLogList_Local extends Fragment {
                 break;
             case R.id.cardmenu_local_stop_recording:
                 //EventBus.getDefault().post(EventBusMSG.REMOTE_REQUEST_STOP_RECORDING);
+                break;
+            case R.id.cardmenu_local_share:
+
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Air Data Bridge - Recording " + SelectedLogFile.Name + "(" + SelectedLogFile.Sizekb + ")");
+
+                //intent.putExtra(Intent.EXTRA_TEXT, (CharSequence) ("GPS Logger - Track " + track.getName()
+                //            + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
+                //            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks)));
+
+                intent.setType("text/csv");
+
+                ArrayList<Uri> files = new ArrayList<>();
+                String fname = SelectedLogFile.LocalName + ".CSV";
+                File file = new File(Environment.getExternalStorageDirectory() + "/AirDataBridge/", fname);
+                if (file.exists ()) {
+                    Uri uri = Uri.fromFile(file);
+                    files.add(uri);
+                }
+
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+
+                String title = getString(R.string.card_menu_share);
+                // Create intent to show chooser
+                Intent chooser = Intent.createChooser(intent, title);
+
+                // Verify the intent will resolve to at least one activity
+                if ((intent.resolveActivity(getContext().getPackageManager()) != null) && (!files.isEmpty())) {
+                    startActivity(chooser);
+                }
+
                 break;
             default:
                 return false;
