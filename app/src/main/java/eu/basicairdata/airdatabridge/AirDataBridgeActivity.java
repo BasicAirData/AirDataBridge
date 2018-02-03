@@ -20,6 +20,7 @@
 package eu.basicairdata.airdatabridge;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -142,10 +143,15 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+        if (item.getItemId() == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
         if (mViewPager.getCurrentItem() == 1) {                     // REMOTE tab active
             switch (item.getItemId()) {
-                case R.id.action_settings:
-                    return true;
                 case R.id.action_new_logfile:
                     // Show FileName Dialog
                     FragmentManager fm = getSupportFragmentManager();
@@ -160,8 +166,6 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         }
         if (mViewPager.getCurrentItem() == 2) {                     // DOWNLOADS tab active
             switch (item.getItemId()) {
-                case R.id.action_settings:
-                    return true;
                 case R.id.action_new_logfile:
                     // Show FileName Dialog
                     FragmentManager fm = getSupportFragmentManager();
