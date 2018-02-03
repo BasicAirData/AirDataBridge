@@ -189,8 +189,11 @@ public class FragmentLogList_Local extends Fragment {
                     data.addAll(TI);
                     textViewLocalListEmpty.setVisibility(View.INVISIBLE);
                 } else {
-                    //if (AirDataBridgeApplication.getInstance().getSD_Status() == AirDataBridgeApplication.SD_STATUS_EMPTY)
+                    if (AirDataBridgeApplication.getInstance().isStoragePermissionGranted()) {
                         textViewLocalListEmpty.setText(R.string.local_archive_empty);
+                    } else {
+                        textViewLocalListEmpty.setText(R.string.local_archive_permission_denied);
+                    }
                     //if (AirDataBridgeApplication.getInstance().getSD_Status() == AirDataBridgeApplication.SD_STATUS_NOT_PRESENT)
                     //    textViewLocalListEmpty.setText(R.string.local_archive_permission_denied);
                     //textViewLocalListEmpty.setVisibility(View.VISIBLE);

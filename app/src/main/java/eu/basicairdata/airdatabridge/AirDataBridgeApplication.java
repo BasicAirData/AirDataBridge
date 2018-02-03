@@ -62,6 +62,8 @@ public class AirDataBridgeApplication extends Application {
     final String newLine = "\r\n";
 
     boolean StoragePermissionChecked = false;
+    boolean StoragePermissionGranted = false;
+
     boolean StatusViewEnabled = false;                                      // If true, the status updates are enabled
     boolean ForceRemoteLST = true;                                          // If true, ask $FMQ,LST also if recording
     boolean DownloadDialogVisible = false;
@@ -71,7 +73,7 @@ public class AirDataBridgeApplication extends Application {
 
     private String CurrentDTA = EMPTY_DTA_MESSAGE;                          // The last DTA received
 
-    short BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_DISCONNECTED;   // The status of Bluetooth connection
+    short BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_NOT_PRESENT;   // The status of Bluetooth connection
     String ADCName = "";                                                    // The name of the remote device
     String ADCFirmwareVersion = "";                                         // The firmware version of remote device
     LogFile CurrentRemoteLogFile = new LogFile();
@@ -95,6 +97,15 @@ public class AirDataBridgeApplication extends Application {
     public void setStoragePermissionChecked(boolean storagePermissionChecked) {
         StoragePermissionChecked = storagePermissionChecked;
     }
+
+    public boolean isStoragePermissionGranted() {
+        return StoragePermissionGranted;
+    }
+
+    public void setStoragePermissionGranted(boolean storagePermissionGranted) {
+        StoragePermissionGranted = storagePermissionGranted;
+    }
+
     public boolean isStatusViewEnabled() {
         return StatusViewEnabled;
     }
@@ -210,340 +221,345 @@ public class AirDataBridgeApplication extends Application {
             Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
         }
 
-        updateLogFileList_Local();
-
         EventBus.getDefault().register(this);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();               // Check for BT adapter
-        if (mBluetoothAdapter == null) {
+        if (mBluetoothAdapter != null) {
+            BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_DISCONNECTED;
             // Device does not support Bluetooth
-            // a BT adapter is not found
-        }
+            // a BT adapter is found
 
-        // Register the Broadcast Receiver for Bluetooth state changes
-        final IntentFilter filter1 = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(mReceiver, filter1);
+            // Register the Broadcast Receiver for Bluetooth state changes
+            final IntentFilter filter1 = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+            registerReceiver(mReceiver, filter1);
 
-        // Setup listener for Bluetooth helper;
-        mBluetooth.setBluetoothHelperListener(new BluetoothHelper.BluetoothHelperListener() {
-            @Override
-            public void onBluetoothHelperMessageReceived(BluetoothHelper bluetoothhelper,
-                                                         final String message) {
-                Log.w("myApp", "[#] AirDataBridgeApplication.java - Message received: " + message);
+            // Setup listener for Bluetooth helper;
+            mBluetooth.setBluetoothHelperListener(new BluetoothHelper.BluetoothHelperListener() {
+                @Override
+                public void onBluetoothHelperMessageReceived(BluetoothHelper bluetoothhelper,
+                                                             final String message) {
+                    Log.w("myApp", "[#] AirDataBridgeApplication.java - Message received: " + message);
 
-                if (BluetoothConnectionStatus == EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC) {
-                    // Process the normal messages
+                    if (BluetoothConnectionStatus == EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC) {
+                        // Process the normal messages
 
-                    if (message.startsWith("$DTA,")) {   // ----------------------------------------------- $DTA
-                        if (!DumpMode) {
-                            String[] msgsplit = CurrentDTA.split(",", -1);
-                            if (msgsplit.length == 25) {
-                                //Log.w("myApp", "[#] AirDataBridgeApplication.java - DTA UPDATED");
-                                stopCommTimeout();
-                                CurrentDTA = message;
-                                EventBus.getDefault().post(EventBusMSG.DTA_UPDATED);
-                            }
-                        } else {
-                            String[] msgsplit = CurrentDTA.split(",", -1);
-                            if (msgsplit.length == 25) {
-                                stopCommTimeout();
-                                long ds = DownloadedSize + message.length() + 2;
-                                if (Math.floor(ds) != Math.floor(DownloadedSize))
-                                    EventBus.getDefault().post(EventBusMSG.UPDATE_DOWNLOAD_PROGRESS);
-                                DownloadedSize += message.length() + 2;
-                                try {
-                                    KMLbw.write(message + newLine);
-                                } catch (IOException e) {
-
+                        if (message.startsWith("$DTA,")) {   // ----------------------------------------------- $DTA
+                            if (!DumpMode) {
+                                String[] msgsplit = CurrentDTA.split(",", -1);
+                                if (msgsplit.length == 25) {
+                                    //Log.w("myApp", "[#] AirDataBridgeApplication.java - DTA UPDATED");
+                                    stopCommTimeout();
+                                    CurrentDTA = message;
+                                    EventBus.getDefault().post(EventBusMSG.DTA_UPDATED);
                                 }
-                                startCommTimeout();
-                            }
-                        }
-                        return;
-                    }
-
-                    if (message.startsWith("$DFA,") && !DownloadDialogVisible) {   // --------------------- $DFA
-                        StringTokenizer tokens = new StringTokenizer(message, ",");
-                        if (tokens.countTokens() == 4) {
-                            stopCommTimeout();
-                            tokens.nextToken();                                         // Command $DFA
-                            SerialDTAFrequency = Float.parseFloat(tokens.nextToken());  // Serial frequency
-                            float newBTvalue = BluetoothDTAFrequency;
-                            float newSDvalue = SDCardDTAFrequency;
-                            String BTfreqvalue = tokens.nextToken();                      // Bluetooth Frequency
-                            if (!BTfreqvalue.equals("=")) newBTvalue = Float.parseFloat(BTfreqvalue);
-                            BTfreqvalue = tokens.nextToken();                             // SDCard Frequency
-                            if (!BTfreqvalue.equals("=")) newSDvalue = Float.parseFloat(BTfreqvalue);
-
-
-                            SDCardDTAFrequency = newSDvalue;
-                            //Log.w("myApp", "[#] AirDataBridgeApplication.java - New SDCardDTAFrequency = " + SDCardDTAFrequency);
-                            if ((SDCardDTAFrequency == 0) || (ForceRemoteLST)) {
-                                mBluetooth.SendMessage("$FMQ,LST");
-                                startCommTimeout();
-                                ForceRemoteLST = false;
                             } else {
-                                mBluetooth.SendMessage("$LCQ");
-                                startCommTimeout();
+                                String[] msgsplit = CurrentDTA.split(",", -1);
+                                if (msgsplit.length == 25) {
+                                    stopCommTimeout();
+                                    long ds = DownloadedSize + message.length() + 2;
+                                    if (Math.floor(ds) != Math.floor(DownloadedSize))
+                                        EventBus.getDefault().post(EventBusMSG.UPDATE_DOWNLOAD_PROGRESS);
+                                    DownloadedSize += message.length() + 2;
+                                    try {
+                                        KMLbw.write(message + newLine);
+                                    } catch (IOException e) {
+
+                                    }
+                                    startCommTimeout();
+                                }
                             }
+                            return;
+                        }
+
+                        if (message.startsWith("$DFA,") && !DownloadDialogVisible) {   // --------------------- $DFA
+                            StringTokenizer tokens = new StringTokenizer(message, ",");
+                            if (tokens.countTokens() == 4) {
+                                stopCommTimeout();
+                                tokens.nextToken();                                         // Command $DFA
+                                SerialDTAFrequency = Float.parseFloat(tokens.nextToken());  // Serial frequency
+                                float newBTvalue = BluetoothDTAFrequency;
+                                float newSDvalue = SDCardDTAFrequency;
+                                String BTfreqvalue = tokens.nextToken();                      // Bluetooth Frequency
+                                if (!BTfreqvalue.equals("="))
+                                    newBTvalue = Float.parseFloat(BTfreqvalue);
+                                BTfreqvalue = tokens.nextToken();                             // SDCard Frequency
+                                if (!BTfreqvalue.equals("="))
+                                    newSDvalue = Float.parseFloat(BTfreqvalue);
 
 
-                            if (BluetoothDTAFrequency != newBTvalue) {
-                                BluetoothDTAFrequency = newBTvalue;
-                                if (BluetoothDTAFrequency == 0) {
-                                    StatusViewEnabled = false;
-                                    EventBus.getDefault().post(EventBusMSG.DISABLE_REALTIME_VIEW);
+                                SDCardDTAFrequency = newSDvalue;
+                                //Log.w("myApp", "[#] AirDataBridgeApplication.java - New SDCardDTAFrequency = " + SDCardDTAFrequency);
+                                if ((SDCardDTAFrequency == 0) || (ForceRemoteLST)) {
+                                    mBluetooth.SendMessage("$FMQ,LST");
+                                    startCommTimeout();
+                                    ForceRemoteLST = false;
                                 } else {
-                                    StatusViewEnabled = true;
-                                    EventBus.getDefault().post(EventBusMSG.ENABLE_REALTIME_VIEW);
+                                    mBluetooth.SendMessage("$LCQ");
+                                    startCommTimeout();
                                 }
-                            }
-                        }
-                        return;
-                    }
 
-                    if (message.startsWith("$FMA,LST")) {   // ----------------------------------------------- $FMA,LST
-                        stopCommTimeout();
-                        if (message.equals("$FMA,LST")) {   // NO SD INSERTED
-                            SD_Status = SD_STATUS_NOT_PRESENT;
-                            synchronized(LogfileList_Remote) {
-                                LogfileList_Remote.clear();
-                            }
-                            EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
-                            Log.w("myApp", "[#] AirDataBridgeApplication.java -------------------------- ");
-                            return;
-                        }
-                        StringTokenizer tokens = new StringTokenizer(message, ",");
-                        tokens.nextToken();                                         // Command $FMA
-                        tokens.nextToken();                                         // LST
-                        int numberoffiles = Integer.parseInt(tokens.nextToken());   // Number of files
-                        SD_Status = SD_STATUS_EMPTY;
-                        if (numberoffiles == tokens.countTokens() / 2) {
-                            LogFile lgf;
-                            synchronized(LogfileList_Remote) {
-                                LogfileList_Remote.clear();
-                                for (int i = 0; i < numberoffiles; i++) {
-                                    lgf = new LogFile(tokens.nextToken(), tokens.nextToken(), "0");
-                                    //Log.w("myApp", "[#] AirDataBridgeApplication.java - Filename = " + lgf.Name + " - Filesize = " + lgf.lsize);
-                                    if (lgf.Extension.equals("CSV")) LogfileList_Remote.add(lgf);
-                                }
-                            }
-                            //Log.w("myApp", "[#] AirDataBridgeApplication.java - EventBusMSG.REMOTE_UPDATE_LOGLIST");
-                            ForceRemoteLST = false;
-                        }
-                        mBluetooth.SendMessage("$LCQ");
-                        startCommTimeout();
-                        return;
-                    }
 
-                    if (message.startsWith("$FMA,NEW")) {   // ----------------------------------------------- $FMA,NEW
-                        stopCommTimeout();
-                        if (message.equals("$FMA,NEW")) {   // ERROR IN ADDING
-                            mBluetooth.SendMessage("$DFQ");
-                            startCommTimeout();
-                            return;
-                        }
-                        StringTokenizer tokens = new StringTokenizer(message, ",");
-                        if (tokens.countTokens() == 3) {
-                            tokens.nextToken();                                         // Command $FMA
-                            tokens.nextToken();                                         // NEW
-                            String filenameext = tokens.nextToken();                    // File name.extension
-                            LogFile lgf = new LogFile(filenameext, "0", "0");
-                            synchronized(LogfileList_Remote) {
-                                LogfileList_Remote.add(0, lgf);
-                                //Log.w("myApp", "[#] AirDataBridgeApplication.java - File ADDED");
-                                if (SDCardDTAFrequency == 0) mBluetooth.SendMessage("$LCS," + filenameext);
-                                mBluetooth.SendMessage("$FMQ,PRP," + filenameext);
-                                startCommTimeout();
-                            }
-                        }
-                        return;
-                    }
-
-                    if (message.startsWith("$FMA,DEL")) {   // ----------------------------------------------- $FMA,DEL
-                        stopCommTimeout();
-                        if (message.equals("$FMA,DEL")) {   // ERROR IN DELETING
-                            mBluetooth.SendMessage("$DFQ");
-                            startCommTimeout();
-                            return;
-                        }
-                        StringTokenizer tokens = new StringTokenizer(message, ",");
-                        if ((tokens.countTokens() == 3) && (!LogfileList_Remote.isEmpty())) {
-                            tokens.nextToken();                                         // Command $FMA
-                            tokens.nextToken();                                         // DEL
-                            String filenameext = tokens.nextToken();                    // File name.extension
-                            synchronized(LogfileList_Remote) {
-                                for (int i = 0; i <= LogfileList_Remote.size();) {
-                                    //Log.w("myApp", "[#] AirDataBridgeApplication.java - Filename = "
-                                    //        + LogfileList_Remote.get(i).Name + "." + LogfileList_Remote.get(i).Extension);
-                                    if (filenameext.equals(LogfileList_Remote.get(i).Name + "." + LogfileList_Remote.get(i).Extension)) {
-                                        LogfileList_Remote.remove(i);
-                                        //Log.w("myApp", "[#] AirDataBridgeApplication.java - File REMOVED");
-                                        break;
-                                    } else i++;
-                                }
-                            }
-                            EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
-                        }
-                        return;
-                    }
-
-                    if (message.startsWith("$FMA,PRP")) {   // ----------------------------------------------- $FMA,PRP
-                        stopCommTimeout();
-                        if (message.equals("$FMA,PRP")) {   // ERROR IN PROPERTIES
-                            mBluetooth.SendMessage("$DFQ");
-                            startCommTimeout();
-                            return;
-                        }
-                        StringTokenizer tokens = new StringTokenizer(message, ",");
-                        if ((tokens.countTokens() == 4) && (!LogfileList_Remote.isEmpty())) {
-                            tokens.nextToken();                                         // Command $FMA
-                            tokens.nextToken();                                         // PRP
-                            String filenameext = tokens.nextToken();                    // File name.extension
-                            String filesize = tokens.nextToken();                       // File size
-
-                            synchronized(LogfileList_Remote) {
-                                for (LogFile lgf : LogfileList_Remote) {
-                                    if (filenameext.equals(lgf.Name + "." + lgf.Extension)) {
-                                        lgf.setSize(filesize);
-                                        break;
+                                if (BluetoothDTAFrequency != newBTvalue) {
+                                    BluetoothDTAFrequency = newBTvalue;
+                                    if (BluetoothDTAFrequency == 0) {
+                                        StatusViewEnabled = false;
+                                        EventBus.getDefault().post(EventBusMSG.DISABLE_REALTIME_VIEW);
+                                    } else {
+                                        StatusViewEnabled = true;
+                                        EventBus.getDefault().post(EventBusMSG.ENABLE_REALTIME_VIEW);
                                     }
                                 }
                             }
-                            EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
-                            Log.w("myApp", "[#] AirDataBridgeApplication.java -------------------------- ");
+                            return;
                         }
-                        return;
-                    }
 
-                    if (message.startsWith("$LCA,")) {   // ----------------------------------------------- $LCA
-                        stopCommTimeout();
-                        StringTokenizer tokens = new StringTokenizer(message, ",");
-                        if ((tokens.countTokens() == 2) && (!LogfileList_Remote.isEmpty())) {
-                            tokens.nextToken();                                         // Command $LCA
-                            String filenameext = tokens.nextToken();                    // File name.extension
-                            synchronized(LogfileList_Remote) {
-                                for (LogFile lgf : LogfileList_Remote) {
-                                    if (filenameext.equals(lgf.Name + "." + lgf.Extension)) {
-                                        lgf.Current = true;
-                                        CurrentRemoteLogFile = lgf;
-                                    } else lgf.Current = false;
+                        if (message.startsWith("$FMA,LST")) {   // ----------------------------------------------- $FMA,LST
+                            stopCommTimeout();
+                            if (message.equals("$FMA,LST")) {   // NO SD INSERTED
+                                SD_Status = SD_STATUS_NOT_PRESENT;
+                                synchronized (LogfileList_Remote) {
+                                    LogfileList_Remote.clear();
                                 }
+                                EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
+                                Log.w("myApp", "[#] AirDataBridgeApplication.java -------------------------- ");
+                                return;
                             }
-                            Log.w("myApp", "[#] AirDataBridgeApplication.java -------------------------- ");
-                        }
-                        EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
-                        return;
-                    }
-
-
-                    if (message.startsWith("$FMA,DMP")) {   // ----------------------------------------------- $FMA,DMP
-                        stopCommTimeout();
-                        if (message.equals("$FMA,DMP")) {   // ERROR IN DUMP
-                            mBluetooth.SendMessage("$DFQ");
+                            StringTokenizer tokens = new StringTokenizer(message, ",");
+                            tokens.nextToken();                                         // Command $FMA
+                            tokens.nextToken();                                         // LST
+                            int numberoffiles = Integer.parseInt(tokens.nextToken());   // Number of files
+                            SD_Status = SD_STATUS_EMPTY;
+                            if (numberoffiles == tokens.countTokens() / 2) {
+                                LogFile lgf;
+                                synchronized (LogfileList_Remote) {
+                                    LogfileList_Remote.clear();
+                                    for (int i = 0; i < numberoffiles; i++) {
+                                        lgf = new LogFile(tokens.nextToken(), tokens.nextToken(), "0");
+                                        //Log.w("myApp", "[#] AirDataBridgeApplication.java - Filename = " + lgf.Name + " - Filesize = " + lgf.lsize);
+                                        if (lgf.Extension.equals("CSV"))
+                                            LogfileList_Remote.add(lgf);
+                                    }
+                                }
+                                //Log.w("myApp", "[#] AirDataBridgeApplication.java - EventBusMSG.REMOTE_UPDATE_LOGLIST");
+                                ForceRemoteLST = false;
+                            }
+                            mBluetooth.SendMessage("$LCQ");
                             startCommTimeout();
                             return;
                         }
-                        DumpMode = true;
-                        Log.w("myApp", "[#] AirDataBridgeApplication.java - START_DOWNLOAD: " + CurrentRemoteDownload.LocalName);
 
-                        File sdCardRoot = Environment.getExternalStorageDirectory();
-                        File yourDir = new File(sdCardRoot, "AirDataBridge");
-                        if (!yourDir.exists()) yourDir.mkdir();
-                        if (yourDir.exists()) {
-                            DLFile = new File(yourDir, (CurrentRemoteDownload.LocalName + "." + CurrentRemoteDownload.Extension));
+                        if (message.startsWith("$FMA,NEW")) {   // ----------------------------------------------- $FMA,NEW
+                            stopCommTimeout();
+                            if (message.equals("$FMA,NEW")) {   // ERROR IN ADDING
+                                mBluetooth.SendMessage("$DFQ");
+                                startCommTimeout();
+                                return;
+                            }
+                            StringTokenizer tokens = new StringTokenizer(message, ",");
+                            if (tokens.countTokens() == 3) {
+                                tokens.nextToken();                                         // Command $FMA
+                                tokens.nextToken();                                         // NEW
+                                String filenameext = tokens.nextToken();                    // File name.extension
+                                LogFile lgf = new LogFile(filenameext, "0", "0");
+                                synchronized (LogfileList_Remote) {
+                                    LogfileList_Remote.add(0, lgf);
+                                    //Log.w("myApp", "[#] AirDataBridgeApplication.java - File ADDED");
+                                    if (SDCardDTAFrequency == 0)
+                                        mBluetooth.SendMessage("$LCS," + filenameext);
+                                    mBluetooth.SendMessage("$FMQ,PRP," + filenameext);
+                                    startCommTimeout();
+                                }
+                            }
+                            return;
+                        }
+
+                        if (message.startsWith("$FMA,DEL")) {   // ----------------------------------------------- $FMA,DEL
+                            stopCommTimeout();
+                            if (message.equals("$FMA,DEL")) {   // ERROR IN DELETING
+                                mBluetooth.SendMessage("$DFQ");
+                                startCommTimeout();
+                                return;
+                            }
+                            StringTokenizer tokens = new StringTokenizer(message, ",");
+                            if ((tokens.countTokens() == 3) && (!LogfileList_Remote.isEmpty())) {
+                                tokens.nextToken();                                         // Command $FMA
+                                tokens.nextToken();                                         // DEL
+                                String filenameext = tokens.nextToken();                    // File name.extension
+                                synchronized (LogfileList_Remote) {
+                                    for (int i = 0; i <= LogfileList_Remote.size(); ) {
+                                        //Log.w("myApp", "[#] AirDataBridgeApplication.java - Filename = "
+                                        //        + LogfileList_Remote.get(i).Name + "." + LogfileList_Remote.get(i).Extension);
+                                        if (filenameext.equals(LogfileList_Remote.get(i).Name + "." + LogfileList_Remote.get(i).Extension)) {
+                                            LogfileList_Remote.remove(i);
+                                            //Log.w("myApp", "[#] AirDataBridgeApplication.java - File REMOVED");
+                                            break;
+                                        } else i++;
+                                    }
+                                }
+                                EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
+                            }
+                            return;
+                        }
+
+                        if (message.startsWith("$FMA,PRP")) {   // ----------------------------------------------- $FMA,PRP
+                            stopCommTimeout();
+                            if (message.equals("$FMA,PRP")) {   // ERROR IN PROPERTIES
+                                mBluetooth.SendMessage("$DFQ");
+                                startCommTimeout();
+                                return;
+                            }
+                            StringTokenizer tokens = new StringTokenizer(message, ",");
+                            if ((tokens.countTokens() == 4) && (!LogfileList_Remote.isEmpty())) {
+                                tokens.nextToken();                                         // Command $FMA
+                                tokens.nextToken();                                         // PRP
+                                String filenameext = tokens.nextToken();                    // File name.extension
+                                String filesize = tokens.nextToken();                       // File size
+
+                                synchronized (LogfileList_Remote) {
+                                    for (LogFile lgf : LogfileList_Remote) {
+                                        if (filenameext.equals(lgf.Name + "." + lgf.Extension)) {
+                                            lgf.setSize(filesize);
+                                            break;
+                                        }
+                                    }
+                                }
+                                EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
+                                Log.w("myApp", "[#] AirDataBridgeApplication.java -------------------------- ");
+                            }
+                            return;
+                        }
+
+                        if (message.startsWith("$LCA,")) {   // ----------------------------------------------- $LCA
+                            stopCommTimeout();
+                            StringTokenizer tokens = new StringTokenizer(message, ",");
+                            if ((tokens.countTokens() == 2) && (!LogfileList_Remote.isEmpty())) {
+                                tokens.nextToken();                                         // Command $LCA
+                                String filenameext = tokens.nextToken();                    // File name.extension
+                                synchronized (LogfileList_Remote) {
+                                    for (LogFile lgf : LogfileList_Remote) {
+                                        if (filenameext.equals(lgf.Name + "." + lgf.Extension)) {
+                                            lgf.Current = true;
+                                            CurrentRemoteLogFile = lgf;
+                                        } else lgf.Current = false;
+                                    }
+                                }
+                                Log.w("myApp", "[#] AirDataBridgeApplication.java -------------------------- ");
+                            }
+                            EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
+                            return;
+                        }
+
+
+                        if (message.startsWith("$FMA,DMP")) {   // ----------------------------------------------- $FMA,DMP
+                            stopCommTimeout();
+                            if (message.equals("$FMA,DMP")) {   // ERROR IN DUMP
+                                mBluetooth.SendMessage("$DFQ");
+                                startCommTimeout();
+                                return;
+                            }
+                            DumpMode = true;
+                            Log.w("myApp", "[#] AirDataBridgeApplication.java - START_DOWNLOAD: " + CurrentRemoteDownload.LocalName);
+
+                            File sdCardRoot = Environment.getExternalStorageDirectory();
+                            File yourDir = new File(sdCardRoot, "AirDataBridge");
+                            if (!yourDir.exists()) yourDir.mkdir();
+                            if (yourDir.exists()) {
+                                DLFile = new File(yourDir, (CurrentRemoteDownload.LocalName + "." + CurrentRemoteDownload.Extension));
+                                try {
+                                    DLFile.createNewFile();
+                                    KMLfw = new PrintWriter(DLFile);
+                                    KMLbw = new BufferedWriter(KMLfw);
+                                } catch (IOException e) {
+
+                                }
+                            }
+                            EventBus.getDefault().post(EventBusMSG.START_DOWNLOAD);
+                            return;
+                        }
+
+
+                        if (message.equals("$EOF")) {   // ----------------------------------------------- $EOF
+                            //Log.w("myApp", "[#] AirDataBridgeApplication.java - DOWNLOAD ENDED: " + DownloadedSize + " / " + CurrentRemoteDownload.lsize);
+                            stopCommTimeout();
                             try {
-                                DLFile.createNewFile();
-                                KMLfw = new PrintWriter(DLFile);
-                                KMLbw = new BufferedWriter(KMLfw);
+                                KMLbw.close();
+                                KMLfw.close();
                             } catch (IOException e) {
 
                             }
+                            if (DownloadedSize != CurrentRemoteDownload.lsize) {
+                                DLFile.delete();
+                            }
+
+                            DumpMode = false;
+                            DownloadDialogVisible = false;
+                            DownloadedSize = 0L;
+
+                            // Set the previous frequencies
+                            mBluetooth.SendMessage("$DFS," + SerialDTAFrequency + "," + BluetoothDTAFrequency + "," + SDCardDTAFrequency);
+                            startCommTimeout();
+
+                            EventBus.getDefault().post(EventBusMSG.END_DOWNLOAD);
+                            updateLogFileList_Local();
+                            return;
                         }
-                        EventBus.getDefault().post(EventBusMSG.START_DOWNLOAD);
-                        return;
+
+
                     }
 
-
-                    if (message.equals("$EOF")) {   // ----------------------------------------------- $EOF
-                        //Log.w("myApp", "[#] AirDataBridgeApplication.java - DOWNLOAD ENDED: " + DownloadedSize + " / " + CurrentRemoteDownload.lsize);
+                    if (message.equals("$HBA,ASGARD,0.4")) {
                         stopCommTimeout();
-                        try {
-                            KMLbw.close();
-                            KMLfw.close();
-                        } catch (IOException e) {
-
-                        }
-                        if (DownloadedSize != CurrentRemoteDownload.lsize) {
-                            DLFile.delete();
-                        }
-
+                        ADCName = "ASGARD";
                         DumpMode = false;
-                        DownloadDialogVisible = false;
-                        DownloadedSize = 0L;
+                        ADCFirmwareVersion = "0.4";
+                        if (BluetoothConnectionStatus != EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC) {
+                            Log.w("myApp", "[#] AirDataBridgeApplication.java - BLUETOOTH_HEARTBEAT_SYNC");
+                            BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC;
+                            EventBus.getDefault().post(EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC);
+                        }
+                    }
+                }
 
-                        // Set the previous frequencies
-                        mBluetooth.SendMessage("$DFS,"+ SerialDTAFrequency +"," + BluetoothDTAFrequency + "," + SDCardDTAFrequency);
+
+                @Override
+                public void onBluetoothHelperConnectionStateChanged(BluetoothHelper bluetoothhelper,
+                                                                    boolean isConnected) {
+                    if (isConnected) {
+                        BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTED;
+                        EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTED);
+                        mBluetooth.SendMessage("$HBQ,AirDataBridge,0.4");
+                        mBluetooth.SendMessage("$HBQ,AirDataBridge,0.4");
                         startCommTimeout();
-
-                        EventBus.getDefault().post(EventBusMSG.END_DOWNLOAD);
-                        updateLogFileList_Local();
-                        return;
-                    }
-
-
-
-                }
-
-                if (message.equals("$HBA,ASGARD,0.4")) {
-                    stopCommTimeout();
-                    ADCName = "ASGARD";
-                    DumpMode = false;
-                    ADCFirmwareVersion = "0.4";
-                    if (BluetoothConnectionStatus != EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC) {
-                        Log.w("myApp", "[#] AirDataBridgeApplication.java - BLUETOOTH_HEARTBEAT_SYNC");
-                        BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC;
-                        EventBus.getDefault().post(EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC);
+                        Log.w("myApp", "[#] AirDataBridgeApplication.java - BLUETOOTH_CONNECTED");
+                        // Do something
+                    } else {
+                        //synchronized(LogfileList_Remote) {
+                        //    LogfileList_Remote.clear();
+                        //    EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
+                        //}
+                        //Log.w("myApp", "[#] AirDataBridgeApplication.java - EventBusMSG.REMOTE_UPDATE_LOGLIST");
+                        // Auto reconnect
+                        if (BluetoothConnectionStatus != EventBusMSG.BLUETOOTH_OFF) {
+                            BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTING;
+                            EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTING);
+                            mBluetooth.Connect("HC-05");
+                        }
+                        EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
                     }
                 }
+            });
+
+            if (mBluetoothAdapter.isEnabled()) {
+                BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTING;
+                EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTING);
+                mBluetooth.Connect("HC-05");
+            } else {
+                BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_OFF;
+                EventBus.getDefault().post(EventBusMSG.BLUETOOTH_OFF);
             }
-
-
-            @Override
-            public void onBluetoothHelperConnectionStateChanged(BluetoothHelper bluetoothhelper,
-                                                                boolean isConnected) {
-                if (isConnected) {
-                    BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTED;
-                    EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTED);
-                    mBluetooth.SendMessage("$HBQ,AirDataBridge,0.4");
-                    mBluetooth.SendMessage("$HBQ,AirDataBridge,0.4");
-                    startCommTimeout();
-                    Log.w("myApp", "[#] AirDataBridgeApplication.java - BLUETOOTH_CONNECTED");
-                    // Do something
-                } else {
-                    //synchronized(LogfileList_Remote) {
-                    //    LogfileList_Remote.clear();
-                    //    EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
-                    //}
-                    //Log.w("myApp", "[#] AirDataBridgeApplication.java - EventBusMSG.REMOTE_UPDATE_LOGLIST");
-                    // Auto reconnect
-                    if (BluetoothConnectionStatus != EventBusMSG.BLUETOOTH_OFF) {
-                        BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTING;
-                        EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTING);
-                        mBluetooth.Connect("HC-05");
-                    }
-                    EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
-                }
-            }
-        });
-
-        if (mBluetoothAdapter.isEnabled()) {
-            BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTING;
-            EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTING);
-            mBluetooth.Connect("HC-05");
         } else {
-            BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_OFF;
-            EventBus.getDefault().post(EventBusMSG.BLUETOOTH_OFF);
+            // Bluetooth adapter not present
+            Log.w("myApp", "[#] AirDataBridgeApplication.java - BLUETOOTH NOT PRESENT");
         }
     }
 
@@ -561,6 +577,16 @@ public class AirDataBridgeApplication extends Application {
     @Subscribe
     public void onEvent(Short msg) {
         switch (msg) {
+            case EventBusMSG.STORAGE_PERMISSION_GRANTED:
+                StoragePermissionGranted = true;
+                // Create folder if not exists
+                File sd = new File(Environment.getExternalStorageDirectory() + "/AirDataBridge");
+                if (!sd.exists()) {
+                    sd.mkdir();
+                }
+                AirDataBridgeApplication.getInstance().setStoragePermissionGranted(true);
+                updateLogFileList_Local();
+                break;
             case EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC:
                 mBluetooth.SendMessage("$DFQ");
                 startCommTimeout();
@@ -690,11 +716,13 @@ public class AirDataBridgeApplication extends Application {
         File yourDir = new File(sdCardRoot, "AirDataBridge");
         synchronized(LogfileList_Local) {
             LogfileList_Local.clear();
-            for (File f : yourDir.listFiles()) {
-                if (f.isFile()) {
-                    LogFile lf = new LogFile(f.getName());
-                    LogfileList_Local.add(lf);
-                    //Log.w("myApp", "[#] AirDataBridgeApplication.java - " + f.getName() + " = " + lf.Name + " " + lf.Extension + " " + lf.Sizekb);
+            if (StoragePermissionGranted) {
+                for (File f : yourDir.listFiles()) {
+                    if (f.isFile()) {
+                        LogFile lf = new LogFile(f.getName());
+                        LogfileList_Local.add(lf);
+                        //Log.w("myApp", "[#] AirDataBridgeApplication.java - " + f.getName() + " = " + lf.Name + " " + lf.Extension + " " + lf.Sizekb);
+                    }
                 }
             }
         }

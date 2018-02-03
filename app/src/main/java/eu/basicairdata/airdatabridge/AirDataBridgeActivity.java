@@ -68,7 +68,7 @@ public class AirDataBridgeActivity extends AppCompatActivity {
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(2);
         setupViewPager(mViewPager);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.id_tablayout);
@@ -225,9 +225,11 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         Log.w("myApp", "[#] AirDataBridgeActivity.java - Check Storage Permission...");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             Log.w("myApp", "[#] AirDataBridgeActivity.java - Storage Permission granted");
+            EventBus.getDefault().post(EventBusMSG.STORAGE_PERMISSION_GRANTED);
             return true;    // Permission Granted
         } else {
             Log.w("myApp", "[#] AirDataBridgeActivity.java - Storage Permission denied");
+            AirDataBridgeApplication.getInstance().setStoragePermissionGranted(false);
             boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (showRationale || !AirDataBridgeApplication.getInstance().isStoragePermissionChecked()) {
                 Log.w("myApp", "[#] AirDataBridgeActivity.java - Storage Permission denied, need new check");
@@ -255,12 +257,7 @@ public class AirDataBridgeActivity extends AppCompatActivity {
                     if (perms.containsKey(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                             Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_GRANTED");
-                            // ---------------------------------------------------- Create the Directories if not exist
-                            File sd = new File(Environment.getExternalStorageDirectory() + "/AirDataBridge");
-                            if (!sd.exists()) {
-                                sd.mkdir();
-                            }
-                            EventBus.getDefault().post(EventBusMSG.LOCAL_UPDATE_LOGLIST);
+                            EventBus.getDefault().post(EventBusMSG.STORAGE_PERMISSION_GRANTED);
                         }
                         //AirDataBridgeApplication.getInstance().setStoragePermissionChecked(true);
                     }
@@ -278,6 +275,7 @@ public class AirDataBridgeActivity extends AppCompatActivity {
     @Subscribe
     public void onEvent(Short msg) {
         switch (msg) {
+            case  EventBusMSG.BLUETOOTH_NOT_PRESENT:
             case  EventBusMSG.BLUETOOTH_OFF:
             case  EventBusMSG.BLUETOOTH_DISCONNECTED:
             case  EventBusMSG.BLUETOOTH_CONNECTING:
@@ -298,6 +296,10 @@ public class AirDataBridgeActivity extends AppCompatActivity {
 
     void Update() {
         switch (AirDataBridgeApplication.getInstance().getBluetoothConnectionStatus()) {
+            case EventBusMSG.BLUETOOTH_NOT_PRESENT:
+                TVStatus.setText(R.string.status_bt_not_present);
+                //TVStatus.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorInactiveGray));
+                break;
             case EventBusMSG.BLUETOOTH_OFF:
                 TVStatus.setText(R.string.status_bt_off);
                 //TVStatus.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorInactiveGray));

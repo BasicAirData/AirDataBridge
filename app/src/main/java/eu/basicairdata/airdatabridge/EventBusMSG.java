@@ -23,12 +23,13 @@ public class EventBusMSG {
     static final short APP_RESUME                       =   1;  // Sent to components on app resume
     static final short APP_PAUSE                        =   2;  // Sent to components on app pause
 
-    static final short BLUETOOTH_OFF                    =   3;  // The Bluetooth is turned off
-    static final short BLUETOOTH_DISCONNECTED           =   4;  // The ADC is disconnected
-    static final short BLUETOOTH_CONNECTING             =   5;  // Trying to connect to ADC via Bluetooth
-    static final short BLUETOOTH_CONNECTED              =   6;  // The ADC is connected via Bluetooth
-    static final short BLUETOOTH_HEARTBEAT_SYNC         =   7;  // The ADC is responding
-    static final short BLUETOOTH_HEARTBEAT_OUTOFSYNC    =   8;  // The ADC is out of sync
+    static final short BLUETOOTH_NOT_PRESENT            =   3;  // Unable to find a Bluetooth adapter
+    static final short BLUETOOTH_OFF                    =   4;  // The Bluetooth is turned off
+    static final short BLUETOOTH_DISCONNECTED           =   5;  // The ADC is disconnected
+    static final short BLUETOOTH_CONNECTING             =   6;  // Trying to connect to ADC via Bluetooth
+    static final short BLUETOOTH_CONNECTED              =   7;  // The ADC is connected via Bluetooth
+    static final short BLUETOOTH_HEARTBEAT_SYNC         =   8;  // The ADC is responding
+    static final short BLUETOOTH_HEARTBEAT_OUTOFSYNC    =   9;  // The ADC is out of sync
 
     static final short REMOTE_UPDATE_LOGLIST            =  11;  // Update loglist signal
     static final short REMOTE_REQUEST_SYNC              =  12;  // A synchronization is requested
@@ -52,6 +53,7 @@ public class EventBusMSG {
     static final short START_DOWNLOAD                   =  43;  // Start to download a file
     static final short END_DOWNLOAD                     =  44;  // End of the download
 
+    static final short STORAGE_PERMISSION_GRANTED       =  119;  // Storage permission granted
     static final short LOCAL_LOGLIST_SELECTION          =  120;  // A logfile is selected on local loglist
 
     static final short LOCAL_FILE_DELETE                =  131;  // Delete a local file

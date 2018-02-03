@@ -54,6 +54,7 @@
     <string name="status_bt_connecting">Looking for Air Data Computer ...</string>
     <string name="status_bt_disconnected">Disconnected</string>
     <string name="status_bt_off">Bluetooth disabled</string>
+    <string name="status_bt_not_present">Bluetooth adapter not present</string>
 
     <!-- Cards -->
     <string name="card_recording">RECORDING</string>

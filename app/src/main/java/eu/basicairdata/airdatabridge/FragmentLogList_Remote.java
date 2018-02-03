@@ -139,9 +139,11 @@ public class FragmentLogList_Remote extends Fragment {
                 menu.findItem(R.id.cardmenu_remote_delete).setVisible(true);
             }
         } else {
-            menu.findItem(R.id.cardmenu_remote_download).setVisible(true);
             menu.findItem(R.id.cardmenu_remote_start_recording).setVisible(true);
             menu.findItem(R.id.cardmenu_remote_delete).setVisible(true);
+
+            if (AirDataBridgeApplication.getInstance().isStoragePermissionGranted())
+                menu.findItem(R.id.cardmenu_remote_download).setVisible(true);
         }
 
     }
