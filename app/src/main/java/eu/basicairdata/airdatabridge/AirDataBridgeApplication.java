@@ -329,12 +329,12 @@ public class AirDataBridgeApplication extends Application {
                             tokens.nextToken();                                         // LST
                             int numberoffiles = Integer.parseInt(tokens.nextToken());   // Number of files
                             SD_Status = SD_STATUS_EMPTY;
-                            if (numberoffiles == tokens.countTokens() / 2) {
+                            if (numberoffiles == tokens.countTokens() / 3) {
                                 LogFile lgf;
                                 synchronized (LogfileList_Remote) {
                                     LogfileList_Remote.clear();
                                     for (int i = 0; i < numberoffiles; i++) {
-                                        lgf = new LogFile(tokens.nextToken(), tokens.nextToken(), "0");
+                                        lgf = new LogFile(tokens.nextToken(), tokens.nextToken(), tokens.nextToken());
                                         //Log.w("myApp", "[#] AirDataBridgeApplication.java - Filename = " + lgf.Name + " - Filesize = " + lgf.lsize);
                                         if (lgf.Extension.equals("CSV"))
                                             LogfileList_Remote.add(lgf);
@@ -409,16 +409,18 @@ public class AirDataBridgeApplication extends Application {
                                 return;
                             }
                             StringTokenizer tokens = new StringTokenizer(message, ",");
-                            if ((tokens.countTokens() == 4) && (!LogfileList_Remote.isEmpty())) {
+                            if ((tokens.countTokens() == 5) && (!LogfileList_Remote.isEmpty())) {
                                 tokens.nextToken();                                         // Command $FMA
                                 tokens.nextToken();                                         // PRP
                                 String filenameext = tokens.nextToken();                    // File name.extension
                                 String filesize = tokens.nextToken();                       // File size
+                                String filetimestamp = tokens.nextToken();                  // File timestamp
 
                                 synchronized (LogfileList_Remote) {
                                     for (LogFile lgf : LogfileList_Remote) {
                                         if (filenameext.equals(lgf.Name + "." + lgf.Extension)) {
                                             lgf.setSize(filesize);
+                                            lgf.setDatetime(filetimestamp);
                                             break;
                                         }
                                     }
@@ -507,11 +509,11 @@ public class AirDataBridgeApplication extends Application {
 
                     }
 
-                    if (message.equals("$HBA,ASGARD,0.4")) {
+                    if (message.equals("$HBA,ASGARD,0.5")) {
                         stopCommTimeout();
                         ADCName = "ASGARD";
                         DumpMode = false;
-                        ADCFirmwareVersion = "0.4";
+                        ADCFirmwareVersion = "0.5";
                         if (BluetoothConnectionStatus != EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC) {
                             Log.w("myApp", "[#] AirDataBridgeApplication.java - BLUETOOTH_HEARTBEAT_SYNC");
                             BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC;

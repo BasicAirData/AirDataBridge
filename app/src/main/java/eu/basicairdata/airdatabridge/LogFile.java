@@ -90,4 +90,12 @@ class LogFile {
         lsize = Long.parseLong(size);
         Sizekb = String.format("%d", (long)Math.ceil((float)lsize / 1024f)) + " kb";
     }
+
+    void setDatetime(String datetime) {
+        ldatetime = Long.parseLong(datetime) * 1000;
+        String vv = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(ldatetime);
+        LocalName = vv + "-" + lsize + "-" + Name;
+
+        DateTime = new SimpleDateFormat("dd MMM yyyy - HH:mm:ss", Locale.ENGLISH).format(ldatetime);
+    }
 }
