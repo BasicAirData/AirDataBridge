@@ -85,6 +85,7 @@
     <string name="pref_keep_screen_on_summary">Battery drains faster</string>
 
     <string name="pref_category_airdatacomputer">AIR DATA COMPUTER</string>
+    <string name="pref_device_name">Bluetooth Device Name</string>
     <string name="pref_sync_datetime">Synchronize Date and Time</string>
     <string name="pref_sync_datetime_nosync">no synchronization</string>
     <string name="pref_sync_datetime_android">with Android time</string>

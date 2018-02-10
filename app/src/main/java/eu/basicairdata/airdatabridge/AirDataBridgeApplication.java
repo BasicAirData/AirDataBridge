@@ -77,7 +77,8 @@ public class AirDataBridgeApplication extends Application {
 
     private String CurrentDTA = EMPTY_DTA_MESSAGE;                          // The last DTA received
 
-    short BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_NOT_PRESENT;   // The status of Bluetooth connection
+    short BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_NOT_PRESENT;    // The status of Bluetooth connection
+    String BluetoothDeviceName = "HC-05";                                   // The name of BT device to connect
     String ADCName = "";                                                    // The name of the remote device
     String ADCFirmwareVersion = "";                                         // The firmware version of remote device
     LogFile CurrentRemoteLogFile = new LogFile();
@@ -199,7 +200,7 @@ public class AirDataBridgeApplication extends Application {
                     case BluetoothAdapter.STATE_ON:
                         BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTING;
                         EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTING);
-                        mBluetooth.Connect("HC-05");
+                        mBluetooth.Connect(BluetoothDeviceName);
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
                         break;
@@ -574,17 +575,20 @@ public class AirDataBridgeApplication extends Application {
                         if (BluetoothConnectionStatus != EventBusMSG.BLUETOOTH_OFF) {
                             BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTING;
                             EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTING);
-                            mBluetooth.Connect("HC-05");
+                            mBluetooth.Connect(BluetoothDeviceName);
                         }
                         EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
                     }
                 }
             });
 
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            BluetoothDeviceName = preferences.getString("prefDeviceName", "HC-05");
+
             if (mBluetoothAdapter.isEnabled()) {
                 BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTING;
                 EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTING);
-                mBluetooth.Connect("HC-05");
+                mBluetooth.Connect(BluetoothDeviceName);
             } else {
                 BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_OFF;
                 EventBus.getDefault().post(EventBusMSG.BLUETOOTH_OFF);
@@ -751,6 +755,13 @@ public class AirDataBridgeApplication extends Application {
 
     private void LoadPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        String oldBluetoothDeviceName = BluetoothDeviceName;
+        BluetoothDeviceName = preferences.getString("prefDeviceName", "HC-05");
+        if ((BluetoothConnectionStatus != EventBusMSG.BLUETOOTH_NOT_PRESENT) && (!oldBluetoothDeviceName.equals(BluetoothDeviceName))) {
+            mBluetooth.Disconnect();
+            mBluetooth.Connect(BluetoothDeviceName);
+        }
 
         int oldprefSyncDateTime = prefSyncDateTime;
         prefSyncDateTime = Integer.valueOf(preferences.getString("prefSyncDatetime", "1"));

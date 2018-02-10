@@ -35,6 +35,12 @@
     <PreferenceCategory
         android:title="@string/pref_category_airdatacomputer">
 
+        <EditTextPreference
+            android:key="prefDeviceName"
+            android:title="@string/pref_device_name"
+            android:summary="HC-05"
+            android:defaultValue="HC-05" />
+
         <ListPreference
             android:key="prefSyncDatetime"
             android:title="@string/pref_sync_datetime"

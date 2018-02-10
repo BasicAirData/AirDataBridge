@@ -22,21 +22,23 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import org.greenrobot.eventbus.EventBus;
+
 
 public class FragmentSettings extends PreferenceFragment {
 
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
     private SharedPreferences prefs;
+    private ListPreference listPreferenceDeviceName;
 
 
     @Override
@@ -49,6 +51,9 @@ public class FragmentSettings extends PreferenceFragment {
         prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 if (key.equals("prefSyncDatetime")) {
+
+                }
+                if (key.equals("prefDeviceName")) {
 
                 }
                 SetupPreferences();
@@ -89,5 +94,8 @@ public class FragmentSettings extends PreferenceFragment {
     public void SetupPreferences() {
         ListPreference prefSyncDatetime = (ListPreference) findPreference("prefSyncDatetime");
         prefSyncDatetime.setSummary(prefSyncDatetime.getEntry());
+
+        EditTextPreference prefDeviceName = (EditTextPreference) findPreference("prefDeviceName");
+        prefDeviceName.setSummary(prefs.getString("prefDeviceName", "HC-05"));
     }
 }
