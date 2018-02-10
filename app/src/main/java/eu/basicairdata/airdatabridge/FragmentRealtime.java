@@ -27,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,8 +37,6 @@ import java.util.Locale;
 
 
 public class FragmentRealtime extends Fragment {
-
-    private RelativeLayout RLRealtimeContent;
 
     private TextView TVAirspeed;
     private TextView TVAirspeed2;
@@ -99,7 +96,6 @@ public class FragmentRealtime extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_realtime, container, false);
 
-        RLRealtimeContent = (RelativeLayout) view.findViewById(R.id.id_realtime_content);
         TVRealtimeDisabled = (TextView) view.findViewById(R.id.id_textView_realtimedisabled);
         TVAirspeed = (TextView) view.findViewById(R.id.id_textView_airspeed);
         TVAirspeed2 = (TextView) view.findViewById(R.id.id_textView_airspeed2);
@@ -194,11 +190,9 @@ public class FragmentRealtime extends Fragment {
                     IMGViewStatus.setAlpha(128);
                 }
                 TVRealtimeDisabled.setVisibility(View.INVISIBLE);
-                RLRealtimeContent.setVisibility(View.VISIBLE);
 
             } else {
                 TVRealtimeDisabled.setVisibility(View.VISIBLE);
-                RLRealtimeContent.setVisibility(View.INVISIBLE);
             }
         }
     }

@@ -33,10 +33,12 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/id_textView_loglistEmpty"
-        android:gravity="center"
+        android:gravity="center_horizontal"
+        android:elevation="4dp"
         android:paddingTop="30dp"
         android:text="@string/remote_sd_not_connected" />
 

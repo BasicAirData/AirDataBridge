@@ -195,7 +195,6 @@ public class FragmentLogList_Remote extends Fragment {
     public void Update() {
         if (isAdded()) {
             if (AirDataBridgeApplication.getInstance().getBluetoothConnectionStatus() == EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC) {
-                recyclerView.setVisibility(View.VISIBLE);
                 final List<LogFile> TI = AirDataBridgeApplication.getInstance().getLogfileList_Remote();
                 synchronized (data) {
                     if (data != null) data.clear();
@@ -220,7 +219,6 @@ public class FragmentLogList_Remote extends Fragment {
             } else {
                 textViewRemoteListEmpty.setText(R.string.remote_sd_not_connected);
                 textViewRemoteListEmpty.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.INVISIBLE);
             }
         }
     }
