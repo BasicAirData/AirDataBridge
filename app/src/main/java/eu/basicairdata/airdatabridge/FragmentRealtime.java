@@ -156,9 +156,17 @@ public class FragmentRealtime extends Fragment {
 
                 String stime = CurrentDTA[1];
                 if (!stime.isEmpty()) {
-                    long unixtime = Long.parseLong(stime);
-                    String vv = new SimpleDateFormat("dd MMM yyyy - HH:mm:ss", Locale.ENGLISH).format(unixtime * 1000);
+                    long localtime = System.currentTimeMillis() / 1000L;       // The Android time
+                    long remotetime  = Long.parseLong(stime);                  // The DTA timestasmp
+                    String vv = new SimpleDateFormat("dd MMM yyyy - HH:mm:ss", Locale.ENGLISH).format(remotetime * 1000);
                     TVDatetime.setText(vv);
+
+                    // a simple synchronization (with one second of resolution) is implemented for now
+                    if (Math.abs(localtime - remotetime) <= 1) {
+                        TVTimesync.setText(getString(R.string.sync_android_time));
+                    } else {
+                        TVTimesync.setText(getString(R.string.sync_no_sync));
+                    }
                 }
                 String sairspeed = CurrentDTA[13];
                 if (!sairspeed.isEmpty()) {

@@ -19,11 +19,16 @@
 package eu.basicairdata.airdatabridge;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -40,25 +45,49 @@ public class FragmentSettings extends PreferenceFragment {
         addPreferencesFromResource(R.xml.app_preferences);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        SetupPreferences();
+
+        prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                if (key.equals("prefSyncDatetime")) {
+
+                }
+                SetupPreferences();
+            }
+        };
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // remove dividers
+        View rootView = getView();
+        ListView list = (ListView) rootView.findViewById(android.R.id.list);
+        list.setDivider(new ColorDrawable(Color.TRANSPARENT));
+        list.setDividerHeight(0);
+
     }
 
     @Override
     public void onResume() {
         prefs.registerOnSharedPreferenceChangeListener(prefListener);
         //Log.w("myApp", "[#] FragmentSettings.java - onResume");
+        //setDivider(new ColorDrawable(Color.TRANSPARENT));
+        //setDividerHeight(0);
+        SetupPreferences();
         super.onResume();
     }
 
     @Override
     public void onPause() {
         prefs.unregisterOnSharedPreferenceChangeListener(prefListener);
-        Log.w("myApp", "[#] FragmentSettings.java - onPause");
+        //Log.w("myApp", "[#] FragmentSettings.java - onPause");
         EventBus.getDefault().post(EventBusMSG.UPDATE_SETTINGS);
         super.onPause();
     }
 
     public void SetupPreferences() {
-
+        ListPreference prefSyncDatetime = (ListPreference) findPreference("prefSyncDatetime");
+        prefSyncDatetime.setSummary(prefSyncDatetime.getEntry());
     }
 }

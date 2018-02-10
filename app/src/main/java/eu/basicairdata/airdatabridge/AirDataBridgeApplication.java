@@ -25,8 +25,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -49,6 +51,8 @@ public class AirDataBridgeApplication extends Application {
     public static final short SD_STATUS_NOT_PRESENT = 0;
     public static final short SD_STATUS_EMPTY       = 1;
     public static final short SD_STATUS_PRESENT     = 2;
+    public static final int   SYNC_NOSYNC           = 0;
+    public static final int   SYNC_ANDROID_TIME     = 1;
 
     public static final short NOT_AVAILABLE         = -1;
 
@@ -84,6 +88,7 @@ public class AirDataBridgeApplication extends Application {
     float DefaultStatusViewFrequency = 2;                                   // (Hz) the standard frequency for Status updates
     long DownloadedSize = 0L;
 
+    private int prefSyncDateTime = SYNC_ANDROID_TIME;
 
     // GETTERS AND SETTERS -----------------------------------------------------------------
 
@@ -447,7 +452,32 @@ public class AirDataBridgeApplication extends Application {
                                 }
                                 Log.w("myApp", "[#] AirDataBridgeApplication.java -------------------------- ");
                             }
+
+                            // Time sync req
+                            if ((SDCardDTAFrequency == 0) && (prefSyncDateTime != SYNC_NOSYNC)) {
+                                mBluetooth.SendMessage("$TMQ");
+                                startCommTimeout();
+                            }
+
                             EventBus.getDefault().post(EventBusMSG.REMOTE_UPDATE_LOGLIST);
+                            return;
+                        }
+
+
+                        if (message.startsWith("$TMA,")) {   // -------------------------------------------------- $TMA
+                            StringTokenizer tokens = new StringTokenizer(message, ",");
+                            if (tokens.countTokens() == 2) {
+                                stopCommTimeout();
+                                tokens.nextToken();                                         // Command $TMA
+                                long localtime  = System.currentTimeMillis() / 1000L;       // The Android time
+                                long remotetime = Long.parseLong(tokens.nextToken());       // The remote time
+
+                                // a simple synchronization (with one second of resolution) is implemented for now
+                                if (remotetime != localtime) {
+                                    mBluetooth.SendMessage("$TMS," + localtime);
+                                    startCommTimeout();
+                                }
+                            }
                             return;
                         }
 
@@ -563,6 +593,7 @@ public class AirDataBridgeApplication extends Application {
             // Bluetooth adapter not present
             Log.w("myApp", "[#] AirDataBridgeApplication.java - BLUETOOTH NOT PRESENT");
         }
+        LoadPreferences();
     }
 
 
@@ -717,8 +748,15 @@ public class AirDataBridgeApplication extends Application {
     }
 
 
+
     private void LoadPreferences() {
-        //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        int oldprefSyncDateTime = prefSyncDateTime;
+        prefSyncDateTime = Integer.valueOf(preferences.getString("prefSyncDatetime", "1"));
+        if (oldprefSyncDateTime != prefSyncDateTime) {
+            EventBus.getDefault().post(EventBusMSG.REMOTE_REQUEST_SYNC);
+        }
         //EventBus.getDefault().post(EventBusMSG.APPLY_SETTINGS);
     }
 

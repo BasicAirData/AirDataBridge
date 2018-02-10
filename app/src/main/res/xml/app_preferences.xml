@@ -32,4 +32,17 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/pref_category_airdatacomputer">
+
+        <ListPreference
+            android:key="prefSyncDatetime"
+            android:title="@string/pref_sync_datetime"
+            android:summary="@string/pref_sync_datetime_android"
+            android:entries="@array/DateTimeSync"
+            android:entryValues="@array/DateTimeSyncValues"
+            android:defaultValue="1" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

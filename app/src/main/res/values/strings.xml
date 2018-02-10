@@ -38,6 +38,8 @@
     <string name="realtime_disabled">Disabled</string>
     <string name="realtime_update_at_hz">Frequency %1$s Hz</string>
     <string name="realtime_not_connected">Air Data Computer not connected\n\nWhen the ADC is connected\non this tab you can view the data\nin real time</string>
+    <string name="sync_no_sync">no sync</string>
+    <string name="sync_android_time">Android time</string>
 
     <string name="tab_remote_loglist">REMOTE</string>
     <string name="remote_sd_not_connected">Air Data Computer not connected\n\nWhen the ADC is connected\non this tab you can manage the Log Files\nof the remote SDCard</string>
@@ -79,8 +81,13 @@
 
     <!-- Settings -->
     <string name="pref_category_interface">INTERFACE</string>
-    <string name="pref_keep_screen_on">Keep Screen On</string>
+    <string name="pref_keep_screen_on">Keep the Screen On</string>
     <string name="pref_keep_screen_on_summary">Battery drains faster</string>
+
+    <string name="pref_category_airdatacomputer">AIR DATA COMPUTER</string>
+    <string name="pref_sync_datetime">Synchronize Date and Time</string>
+    <string name="pref_sync_datetime_nosync">no synchronization</string>
+    <string name="pref_sync_datetime_android">with Android time</string>
 
     <!-- Units of measurement -->
     <string name="m_s">m/s</string>

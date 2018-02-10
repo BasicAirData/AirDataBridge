@@ -328,7 +328,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
-            android:text="No Sync"
+            android:text="-"
             android:textColor="@color/colorTextStrong"
             android:maxLines="1" />
 
