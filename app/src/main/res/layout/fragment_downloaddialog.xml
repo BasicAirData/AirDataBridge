@@ -22,7 +22,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="0dp"
     android:id="@+id/id_layout_download">
 
     <TextView
@@ -55,5 +58,15 @@
         android:text="0/0 kb"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+    <CheckBox
+        android:id="@+id/id_downloaddialog_notify"
+        android:text="@string/dlg_download_notification"
+        android:layout_below="@id/id_downloaddialog_percent"
+        android:layout_marginLeft="-7dp"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearanceLargeUM"/>
 
 </RelativeLayout>

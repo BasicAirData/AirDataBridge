@@ -26,6 +26,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -60,6 +63,7 @@ public class AirDataBridgeApplication extends Application {
 
     private short SD_Status = SD_STATUS_NOT_PRESENT;
 
+    Ringtone ringtone;
     File DLFile;
     PrintWriter KMLfw = null;
     BufferedWriter KMLbw = null;
@@ -523,6 +527,11 @@ public class AirDataBridgeApplication extends Application {
                             }
                             if (DownloadedSize != CurrentRemoteDownload.lsize) {
                                 DLFile.delete();
+                            } else if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefNotifyDownloadFinished", false)) {
+                                // Download finished, play audio notification
+                                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                ringtone.play();
                             }
 
                             DumpMode = false;

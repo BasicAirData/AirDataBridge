@@ -20,13 +20,17 @@ package eu.basicairdata.airdatabridge;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -41,12 +45,16 @@ public class FragmentDownloadDialog extends DialogFragment {
     TextView TVDownloadDesc;
     TextView TVDownloadPercent;
     TextView TVDownloadkb;
+    CheckBox CHKNotify;
     ProgressBar PBProgress;
+
+    SharedPreferences settings;
 
     //@SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder downloadAlert = new AlertDialog.Builder(getActivity());
+        settings = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         dwFile = ADBApplication.getCurrentRemoteDownload();
         Log.w("myApp", "[#] FragmentDownloadDialog: REQUEST_START_DOWNLOAD = " + dwFile.Name);
@@ -58,6 +66,18 @@ public class FragmentDownloadDialog extends DialogFragment {
         TVDownloadPercent = (TextView) view.findViewById(R.id.id_downloaddialog_percent);
         TVDownloadkb = (TextView) view.findViewById(R.id.id_downloaddialog_kb);
         PBProgress = (ProgressBar) view.findViewById(R.id.id_downloaddialog_progressBar);
+        CHKNotify = (CheckBox) view.findViewById(R.id.id_downloaddialog_notify);
+
+        CHKNotify.setChecked(settings.getBoolean("prefNotifyDownloadFinished", false));
+
+        CHKNotify.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                SharedPreferences.Editor editor1 = settings.edit();
+                editor1.putBoolean("prefNotifyDownloadFinished", isChecked);
+                editor1.commit();
+            }
+        });
 
         TVDownloadDesc.setText(getResources().getString(R.string.dlg_download_the_file, dwFile.Name));
 
