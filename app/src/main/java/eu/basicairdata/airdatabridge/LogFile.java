@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-class LogFile {
+class LogFile implements Comparable<LogFile> {
 
     public static final short LOCATION_UNSPECIFIED = 0;
     public static final short LOCATION_REMOTE = 1;
@@ -98,4 +98,21 @@ class LogFile {
 
         DateTime = new SimpleDateFormat("dd MMM yyyy - HH:mm:ss", Locale.ENGLISH).format(ldatetime);
     }
+
+    @Override
+    public int compareTo(LogFile f) {
+
+        if (ldatetime > f.ldatetime) {
+            return -1;
+        }
+        else if (ldatetime < f.ldatetime) {
+            return 1;
+        }
+        else {
+            int i = Name.compareToIgnoreCase(f.Name);
+            return i;
+        }
+
+    }
+
 }

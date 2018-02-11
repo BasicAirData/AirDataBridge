@@ -345,6 +345,7 @@ public class AirDataBridgeApplication extends Application {
                                         if (lgf.Extension.equals("CSV"))
                                             LogfileList_Remote.add(lgf);
                                     }
+                                    if (!LogfileList_Remote.isEmpty()) Collections.sort(LogfileList_Remote);
                                 }
                                 //Log.w("myApp", "[#] AirDataBridgeApplication.java - EventBusMSG.REMOTE_UPDATE_LOGLIST");
                                 ForceRemoteLST = false;
@@ -786,6 +787,7 @@ public class AirDataBridgeApplication extends Application {
                     }
                 }
             }
+            if (!LogfileList_Local.isEmpty()) Collections.sort(LogfileList_Local);
         }
         EventBus.getDefault().post(EventBusMSG.LOCAL_UPDATE_LOGLIST);
     }
