@@ -20,9 +20,12 @@
 
 <resources>
     <string name="app_name">Air Data Bridge</string>
+
+    <!-- Main Menu -->
     <string name="action_settings">Settings</string>
     <string name="action_new_logfile">New Log</string>
     <string name="action_sync">Sync</string>
+    <string name="action_about">About</string>
 
     <!-- Tabs -->
     <string name="tab_adcstatus">REAL TIME</string>
@@ -78,6 +81,11 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
+
+    <!-- About Dialog -->
+    <string name="about_version">ver.</string>
+    <string name="about_description">Copyright (C) 2017 BasicAirData\nhttp://www.basicairdata.eu\n\nAir Data Bridge is a simple app to manage the BasicAirData Air Data Computer with your Android device.\n\nUsing this app you can connect with the Air Data Computer on-the-field via Bluetooth and drive the device to do many things. For example you can view the air data in real time, start and stop the remote logging on the remote SDCard, set many parameters of the ADC and download your recordings.\n\nThe application is made to work with the BasicAirData Asgard Air Data Computer (https://github.com/BasicAirData/AirDataComputer).\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt.</string>
+    <string name="about_ok">Close</string>
 
     <!-- Settings -->
     <string name="pref_category_interface">INTERFACE</string>

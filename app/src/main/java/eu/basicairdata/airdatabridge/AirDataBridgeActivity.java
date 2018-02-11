@@ -149,6 +149,14 @@ public class AirDataBridgeActivity extends AppCompatActivity {
             return true;
         }
 
+        if (item.getItemId() == R.id.action_about) {
+            // Show About Dialog
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentAboutDialog aboutDialog = new FragmentAboutDialog();
+            aboutDialog.show(fm, "");
+            return true;
+        }
+
         if (mViewPager.getCurrentItem() == 1) {                     // REMOTE tab active
             switch (item.getItemId()) {
                 case R.id.action_new_logfile:

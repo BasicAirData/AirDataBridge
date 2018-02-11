@@ -38,8 +38,6 @@ public class FragmentSettings extends PreferenceFragment {
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
     private SharedPreferences prefs;
-    private ListPreference listPreferenceDeviceName;
-
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {

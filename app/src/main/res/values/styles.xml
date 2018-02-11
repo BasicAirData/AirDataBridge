@@ -53,4 +53,10 @@
         <item name="android:textSize">@dimen/textappearance_largeUM_size</item>
     </style>
 
+    <style name="AboutDialog" parent="AppTheme" >
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
 </resources>
