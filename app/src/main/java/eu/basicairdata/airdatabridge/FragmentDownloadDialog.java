@@ -46,6 +46,7 @@ public class FragmentDownloadDialog extends DialogFragment {
     TextView TVDownloadPercent;
     TextView TVDownloadkb;
     CheckBox CHKNotify;
+    CheckBox CHKDeleteRemoteFile;
     ProgressBar PBProgress;
 
     SharedPreferences settings;
@@ -66,15 +67,25 @@ public class FragmentDownloadDialog extends DialogFragment {
         TVDownloadPercent = (TextView) view.findViewById(R.id.id_downloaddialog_percent);
         TVDownloadkb = (TextView) view.findViewById(R.id.id_downloaddialog_kb);
         PBProgress = (ProgressBar) view.findViewById(R.id.id_downloaddialog_progressBar);
+
         CHKNotify = (CheckBox) view.findViewById(R.id.id_downloaddialog_notify);
-
         CHKNotify.setChecked(settings.getBoolean("prefNotifyDownloadFinished", false));
-
         CHKNotify.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
                 SharedPreferences.Editor editor1 = settings.edit();
                 editor1.putBoolean("prefNotifyDownloadFinished", isChecked);
+                editor1.commit();
+            }
+        });
+
+        CHKDeleteRemoteFile = (CheckBox) view.findViewById(R.id.id_downloaddialog_delete_remote_file);
+        CHKDeleteRemoteFile.setChecked(settings.getBoolean("prefDeleteRemoteFileWhenDownloadFinished", false));
+        CHKDeleteRemoteFile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                SharedPreferences.Editor editor1 = settings.edit();
+                editor1.putBoolean("prefDeleteRemoteFileWhenDownloadFinished", isChecked);
                 editor1.commit();
             }
         });

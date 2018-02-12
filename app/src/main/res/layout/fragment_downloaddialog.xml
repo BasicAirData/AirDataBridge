@@ -69,4 +69,13 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearanceLargeUM"/>
 
+    <CheckBox
+        android:id="@+id/id_downloaddialog_delete_remote_file"
+        android:text="@string/dlg_download_delete_remote_file"
+        android:layout_below="@id/id_downloaddialog_notify"
+        android:layout_alignLeft="@id/id_downloaddialog_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearanceLargeUM"/>
+
 </RelativeLayout>

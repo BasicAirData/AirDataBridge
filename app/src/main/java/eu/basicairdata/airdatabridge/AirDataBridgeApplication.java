@@ -527,11 +527,17 @@ public class AirDataBridgeApplication extends Application {
                             }
                             if (DownloadedSize != CurrentRemoteDownload.lsize) {
                                 DLFile.delete();
-                            } else if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefNotifyDownloadFinished", false)) {
-                                // Download finished, play audio notification
-                                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                ringtone.play();
+                            } else {
+                                if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefNotifyDownloadFinished", false)) {
+                                    // Download finished, play audio notification
+                                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                    ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                    ringtone.play();
+                                }
+                                if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefDeleteRemoteFileWhenDownloadFinished", false)) {
+                                    // Download finished, Delete the remote file
+                                    mBluetooth.SendMessage("$FMQ,DEL," + CurrentRemoteDownload.Name + "." + CurrentRemoteDownload.Extension);
+                                }
                             }
 
                             DumpMode = false;

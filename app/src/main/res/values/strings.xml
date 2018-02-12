@@ -77,7 +77,8 @@
     <string name="dlg_new_remote_logfile_title">New Remote Log file</string>
     <string name="dlg_new_local_logfile_title">New Local Recording</string>
     <string name="dlg_download_the_file">Downloading %1$s ...</string>
-    <string name="dlg_download_notification">Audio notification when finished</string>
+    <string name="dlg_download_notification">Audio Notification when finished</string>
+    <string name="dlg_download_delete_remote_file">Delete the remote File</string>
     <string name="ok">Ok</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
