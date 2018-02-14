@@ -164,15 +164,8 @@ public class AirDataBridgeApplication extends Application {
     public long getDownloadedSize() {
         return DownloadedSize;
     }
-
-    public boolean isPrefNotifyDownloadFinished() {
-        return prefNotifyDownloadFinished;
-    }
     public void setPrefNotifyDownloadFinished(boolean prefNotifyDownloadFinished) {
         this.prefNotifyDownloadFinished = prefNotifyDownloadFinished;
-    }
-    public boolean isPrefDeleteRemoteFileWhenDownloadFinished() {
-        return prefDeleteRemoteFileWhenDownloadFinished;
     }
     public void setPrefDeleteRemoteFileWhenDownloadFinished(boolean prefDeleteRemoteFileWhenDownloadFinished) {
         this.prefDeleteRemoteFileWhenDownloadFinished = prefDeleteRemoteFileWhenDownloadFinished;
@@ -188,6 +181,14 @@ public class AirDataBridgeApplication extends Application {
             ADCFirmwareVersion = "";
             isCommTimeoutHandler = false;
             mBluetooth.Disconnect();
+            if (DumpMode) {
+                DumpMode = false;
+                DownloadDialogVisible = false;
+                DownloadedSize = 0L;
+                EventBus.getDefault().post(EventBusMSG.END_DOWNLOAD);
+                DLFile.delete();
+                updateLogFileList_Local();
+            }
             BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_DISCONNECTED;
             EventBus.getDefault().post(EventBusMSG.BLUETOOTH_DISCONNECTED);
         }
