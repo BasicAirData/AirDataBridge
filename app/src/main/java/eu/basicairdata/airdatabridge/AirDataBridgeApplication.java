@@ -94,6 +94,9 @@ public class AirDataBridgeApplication extends Application {
     long DownloadedSize = 0L;
 
     private int prefSyncDateTime = SYNC_ANDROID_TIME;
+    private boolean prefNotifyDownloadFinished = false;                     // Audio notification at download end
+    private boolean prefDeleteRemoteFileWhenDownloadFinished = false;       // Delete the remote file at download end
+
 
     // GETTERS AND SETTERS -----------------------------------------------------------------
 
@@ -160,6 +163,19 @@ public class AirDataBridgeApplication extends Application {
     }
     public long getDownloadedSize() {
         return DownloadedSize;
+    }
+
+    public boolean isPrefNotifyDownloadFinished() {
+        return prefNotifyDownloadFinished;
+    }
+    public void setPrefNotifyDownloadFinished(boolean prefNotifyDownloadFinished) {
+        this.prefNotifyDownloadFinished = prefNotifyDownloadFinished;
+    }
+    public boolean isPrefDeleteRemoteFileWhenDownloadFinished() {
+        return prefDeleteRemoteFileWhenDownloadFinished;
+    }
+    public void setPrefDeleteRemoteFileWhenDownloadFinished(boolean prefDeleteRemoteFileWhenDownloadFinished) {
+        this.prefDeleteRemoteFileWhenDownloadFinished = prefDeleteRemoteFileWhenDownloadFinished;
     }
     // -------------------------------------------------------------------------------------
 
@@ -528,13 +544,13 @@ public class AirDataBridgeApplication extends Application {
                             if (DownloadedSize != CurrentRemoteDownload.lsize) {
                                 DLFile.delete();
                             } else {
-                                if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefNotifyDownloadFinished", false)) {
+                                if (prefNotifyDownloadFinished) {
                                     // Download finished, play audio notification
                                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                                     ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
                                     ringtone.play();
                                 }
-                                if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefDeleteRemoteFileWhenDownloadFinished", false)) {
+                                if (prefDeleteRemoteFileWhenDownloadFinished) {
                                     // Download finished, Delete the remote file
                                     mBluetooth.SendMessage("$FMQ,DEL," + CurrentRemoteDownload.Name + "." + CurrentRemoteDownload.Extension);
                                 }

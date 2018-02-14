@@ -73,9 +73,10 @@ public class FragmentDownloadDialog extends DialogFragment {
         CHKNotify.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                SharedPreferences.Editor editor1 = settings.edit();
-                editor1.putBoolean("prefNotifyDownloadFinished", isChecked);
-                editor1.commit();
+                AirDataBridgeApplication.getInstance().setPrefNotifyDownloadFinished(isChecked);
+                //SharedPreferences.Editor editor1 = settings.edit();
+                //editor1.putBoolean("prefNotifyDownloadFinished", isChecked);
+                //editor1.commit();
             }
         });
 
@@ -84,9 +85,10 @@ public class FragmentDownloadDialog extends DialogFragment {
         CHKDeleteRemoteFile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                SharedPreferences.Editor editor1 = settings.edit();
-                editor1.putBoolean("prefDeleteRemoteFileWhenDownloadFinished", isChecked);
-                editor1.commit();
+                AirDataBridgeApplication.getInstance().setPrefDeleteRemoteFileWhenDownloadFinished(isChecked);
+                //SharedPreferences.Editor editor1 = settings.edit();
+                //editor1.putBoolean("prefDeleteRemoteFileWhenDownloadFinished", isChecked);
+                //editor1.commit();
             }
         });
 

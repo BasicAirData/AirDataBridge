@@ -21,6 +21,7 @@ package eu.basicairdata.airdatabridge;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -172,6 +173,8 @@ public class FragmentLogList_Remote extends Fragment {
                 dialog.show();
                 break;
             case R.id.cardmenu_remote_download:
+                AirDataBridgeApplication.getInstance().setPrefNotifyDownloadFinished(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("prefNotifyDownloadFinished", false));
+                AirDataBridgeApplication.getInstance().setPrefDeleteRemoteFileWhenDownloadFinished(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("prefDeleteRemoteFileWhenDownloadFinished", false));
                 AirDataBridgeApplication.getInstance().setDownloadDialogVisible(true);
                 AirDataBridgeApplication.getInstance().setCurrentRemoteDownload(SelectedLogFile);
                 FragmentManager fm = getActivity().getSupportFragmentManager();

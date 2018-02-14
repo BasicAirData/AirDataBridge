@@ -100,6 +100,12 @@
     <string name="pref_sync_datetime_nosync">no synchronization</string>
     <string name="pref_sync_datetime_android">with Android time</string>
 
+    <string name="pref_category_downloads">DOWNLOADS</string>
+    <string name="pref_download_notification">Play Audio Notification</string>
+    <string name="pref_download_notification_summary">when a download is completed</string>
+    <string name="pref_download_delete_remote_file">Delete the remote File</string>
+    <string name="pref_download_delete_remote_file_summary">if the download is successful</string>
+
     <!-- Units of measurement -->
     <string name="m_s">m/s</string>
     <string name="km_h">km/h</string>

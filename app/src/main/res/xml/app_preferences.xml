@@ -51,4 +51,21 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/pref_category_downloads">
+
+        <CheckBoxPreference
+            android:key="prefNotifyDownloadFinished"
+            android:title="@string/pref_download_notification"
+            android:summary="@string/pref_download_notification_summary"
+            android:defaultValue="false" />
+
+        <CheckBoxPreference
+            android:key="prefDeleteRemoteFileWhenDownloadFinished"
+            android:title="@string/pref_download_delete_remote_file"
+            android:summary="@string/pref_download_delete_remote_file_summary"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
