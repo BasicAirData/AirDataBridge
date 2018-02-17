@@ -49,6 +49,20 @@
             android:entryValues="@array/DateTimeSyncValues"
             android:defaultValue="1" />
 
+        <EditTextPreference
+            android:key="prefSDRecordingFrequency"
+            android:title="@string/pref_sd_recording_frequency"
+            android:summary="50 Hz"
+            android:defaultValue="50"
+            android:inputType="numberDecimal" />
+
+        <EditTextPreference
+            android:key="prefBTDataFrequency"
+            android:title="@string/pref_bt_data_frequency"
+            android:summary="2 Hz"
+            android:defaultValue="2"
+            android:inputType="numberDecimal" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

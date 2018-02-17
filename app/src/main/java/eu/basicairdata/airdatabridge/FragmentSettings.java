@@ -48,12 +48,44 @@ public class FragmentSettings extends PreferenceFragment {
 
         prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if (key.equals("prefSyncDatetime")) {
+                if (key.equals("prefBTDataFrequency")) {
+                    float BTFreq = 2;
+                    try {
+                        float f = Float.parseFloat(sharedPreferences.getString("prefBTDataFrequency", "2"));
+                        BTFreq = f;
+                        if (BTFreq <= 0) BTFreq = 1;
+                        if (BTFreq > 4) BTFreq = 4;
+                    }
+                    catch(NumberFormatException nfe)
+                    {
+                        BTFreq = 2;
+                    }
 
+                    SharedPreferences.Editor editor = prefs.edit();
+                    if(BTFreq == (long) BTFreq) editor.putString("prefBTDataFrequency", String.valueOf((long)BTFreq));
+                    else editor.putString("prefBTDataFrequency", String.valueOf(BTFreq));
+                    editor.commit();
                 }
-                if (key.equals("prefDeviceName")) {
 
+                if (key.equals("prefSDRecordingFrequency")) {
+                    float SDFreq = 50;
+                    try {
+                        float f = Float.parseFloat(sharedPreferences.getString("prefSDRecordingFrequency", "50"));
+                        SDFreq = f;
+                        if (SDFreq <= 0) SDFreq = 1;
+                        if (SDFreq > 50) SDFreq = 50;
+                    }
+                    catch(NumberFormatException nfe)
+                    {
+                        SDFreq = 50;
+                    }
+
+                    SharedPreferences.Editor editor = prefs.edit();
+                    if(SDFreq == (long) SDFreq) editor.putString("prefSDRecordingFrequency", String.valueOf((long)SDFreq));
+                    else editor.putString("prefSDRecordingFrequency", String.valueOf(SDFreq));
+                    editor.commit();
                 }
+
                 SetupPreferences();
             }
         };
@@ -95,5 +127,11 @@ public class FragmentSettings extends PreferenceFragment {
 
         EditTextPreference prefDeviceName = (EditTextPreference) findPreference("prefDeviceName");
         prefDeviceName.setSummary(prefs.getString("prefDeviceName", "HC-05"));
+
+        EditTextPreference prefBTDataFrequency = (EditTextPreference) findPreference("prefBTDataFrequency");
+        prefBTDataFrequency.setSummary(prefs.getString("prefBTDataFrequency", "2") + " " + getString(R.string.hz));
+
+        EditTextPreference prefSDRecordingFrequency = (EditTextPreference) findPreference("prefSDRecordingFrequency");
+        prefSDRecordingFrequency.setSummary(prefs.getString("prefSDRecordingFrequency", "50") + " " + getString(R.string.hz));
     }
 }

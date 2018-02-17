@@ -99,6 +99,8 @@
     <string name="pref_sync_datetime">Synchronize Date and Time</string>
     <string name="pref_sync_datetime_nosync">no synchronization</string>
     <string name="pref_sync_datetime_android">with Android time</string>
+    <string name="pref_sd_recording_frequency">Remote SD recording Frequency</string>
+    <string name="pref_bt_data_frequency">Bluetooth Data Frequency</string>
 
     <string name="pref_category_downloads">DOWNLOADS</string>
     <string name="pref_download_notification">Play Audio Notification</string>
@@ -107,6 +109,7 @@
     <string name="pref_download_delete_remote_file_summary">if the download is successful</string>
 
     <!-- Units of measurement -->
+    <string name="hz">Hz</string>
     <string name="m_s">m/s</string>
     <string name="km_h">km/h</string>
     <string name="degk">K</string>

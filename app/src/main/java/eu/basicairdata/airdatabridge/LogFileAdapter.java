@@ -97,6 +97,11 @@ class LogFileAdapter extends RecyclerView.Adapter<LogFileAdapter.LogFileHolder> 
             textViewFileSize.setText(logFile.Sizekb);
             if ((logFile.Current) && (AirDataBridgeApplication.getInstance().getSDCardDTAFrequency() != 0)) {      // REC
                 textViewRecordingFreq.setVisibility(View.VISIBLE);
+
+                float SDFreq = AirDataBridgeApplication.getInstance().getPrefSDRecordingFrequency();
+                if(SDFreq == (long) SDFreq) textViewRecordingFreq.setText(String.valueOf((long)SDFreq) + " " + AirDataBridgeApplication.getInstance().getApplicationContext().getString(R.string.hz));
+                else textViewRecordingFreq.setText(String.valueOf(SDFreq) + " " + AirDataBridgeApplication.getInstance().getApplicationContext().getString(R.string.hz));
+
                 textViewRecording.setVisibility(View.VISIBLE);
                 textViewFileSize.setVisibility(View.INVISIBLE);
                 cardview.setCardBackgroundColor(ContextCompat.getColor(AirDataBridgeApplication.getInstance().getApplicationContext(), R.color.colorCardBackgroundRemoteRecording));

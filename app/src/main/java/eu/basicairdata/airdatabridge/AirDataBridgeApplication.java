@@ -90,12 +90,13 @@ public class AirDataBridgeApplication extends Application {
     float SerialDTAFrequency    = NOT_AVAILABLE;                            // The frequency of Serial $DTA messages
     float BluetoothDTAFrequency = NOT_AVAILABLE;                            // The frequency of Bluetooth $DTA messages
     float SDCardDTAFrequency    = NOT_AVAILABLE;                            // The frequency of SDCard $DTA messages
-    float DefaultStatusViewFrequency = 2;                                   // (Hz) the standard frequency for Status updates
     long DownloadedSize = 0L;
 
-    private int prefSyncDateTime = SYNC_ANDROID_TIME;
+    private int     prefSyncDateTime = SYNC_ANDROID_TIME;
     private boolean prefNotifyDownloadFinished = false;                     // Audio notification at download end
     private boolean prefDeleteRemoteFileWhenDownloadFinished = false;       // Delete the remote file at download end
+    private float   prefBTDataFrequency = 2.0f;                             // The Bluetooth Data Frequency
+    private float   prefSDRecordingFrequency = 50.0f;                       // The Remote SD recording Frequency
 
 
     // GETTERS AND SETTERS -----------------------------------------------------------------
@@ -169,6 +170,12 @@ public class AirDataBridgeApplication extends Application {
     }
     public void setPrefDeleteRemoteFileWhenDownloadFinished(boolean prefDeleteRemoteFileWhenDownloadFinished) {
         this.prefDeleteRemoteFileWhenDownloadFinished = prefDeleteRemoteFileWhenDownloadFinished;
+    }
+    public float getPrefSDRecordingFrequency() {
+        return prefSDRecordingFrequency;
+    }
+    public float getPrefBTDataFrequency() {
+        return prefBTDataFrequency;
     }
     // -------------------------------------------------------------------------------------
 
@@ -678,7 +685,7 @@ public class AirDataBridgeApplication extends Application {
                 break;
             case EventBusMSG.REQUEST_ENABLE_REALTIME_VIEW:
                 //Log.w("myApp", "[#] AirDataBridgeApplication.java - REQUEST_ENABLE_REALTIME_VIEW");
-                mBluetooth.SendMessage("$DFS,=," + DefaultStatusViewFrequency + ",=");
+                mBluetooth.SendMessage("$DFS,=," + prefBTDataFrequency + ",=");
                 startCommTimeout();
                 break;
             case EventBusMSG.REQUEST_DISABLE_REALTIME_VIEW:
@@ -711,7 +718,7 @@ public class AirDataBridgeApplication extends Application {
             // -------------------------------------------------------- REMOTE SECTION
             case EventBusMSG.REMOTE_REQUEST_START_RECORDING:
                 mBluetooth.SendMessage("$LCS," + msg.logFile.Name + "." + msg.logFile.Extension);
-                mBluetooth.SendMessage("$DFS,=,=,50");
+                mBluetooth.SendMessage("$DFS,=,=," + prefSDRecordingFrequency);
                 startCommTimeout();
                 break;
             case EventBusMSG.REMOTE_FILE_DELETE:
@@ -801,6 +808,13 @@ public class AirDataBridgeApplication extends Application {
         if (oldprefSyncDateTime != prefSyncDateTime) {
             EventBus.getDefault().post(EventBusMSG.REMOTE_REQUEST_SYNC);
         }
+
+        prefBTDataFrequency = Float.valueOf(preferences.getString("prefBTDataFrequency", "2"));
+        if ((BluetoothConnectionStatus == EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC) && (BluetoothDTAFrequency != 0) && (BluetoothDTAFrequency != prefBTDataFrequency))
+            EventBus.getDefault().post(EventBusMSG.REQUEST_ENABLE_REALTIME_VIEW);  // If not local recording, set the new frequency (for realtime view)
+
+        prefSDRecordingFrequency = Float.valueOf(preferences.getString("prefSDRecordingFrequency", "50"));
+
         //EventBus.getDefault().post(EventBusMSG.APPLY_SETTINGS);
     }
 

@@ -180,8 +180,11 @@ public class FragmentRealtime extends Fragment {
                 TVAirViscosity.setText(CurrentDTA[22].isEmpty() ? "-" : CurrentDTA[22] + "  " + getString(R.string.Paxs));                 // Air viscosity
 
                 if (ADBApplication.isStatusViewEnabled()) {
-                    TVUpdates.setText(getResources().getString(R.string.realtime_update_at_hz,
-                            String.valueOf(ADBApplication.getBluetoothDTAFrequency())));
+                    float BTFreq = ADBApplication.getBluetoothDTAFrequency();
+                    if(BTFreq == (long) BTFreq)
+                        TVUpdates.setText(getResources().getString(R.string.realtime_update_at_hz, String.valueOf((long)BTFreq)));
+                    else
+                        TVUpdates.setText(getResources().getString(R.string.realtime_update_at_hz, String.valueOf(BTFreq)));
                     IMGViewStatus.setImageBitmap(bmpVisibility[1]);
                     IMGViewStatus.setAlpha(255);
                 } else {
