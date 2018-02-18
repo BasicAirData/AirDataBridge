@@ -40,6 +40,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -297,6 +298,14 @@ public class AirDataBridgeActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Update();
+                    }
+                });
+                break;
+            case  EventBusMSG.ERROR_FILE_ALREADY_EXISTS:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(AirDataBridgeActivity.this, getString(R.string.toast_file_already_exists), Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;

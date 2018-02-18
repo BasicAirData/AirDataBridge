@@ -386,6 +386,7 @@ public class AirDataBridgeApplication extends Application {
                         if (message.startsWith("$FMA,NEW")) {   // ----------------------------------------------- $FMA,NEW
                             stopCommTimeout();
                             if (message.equals("$FMA,NEW")) {   // ERROR IN ADDING
+                                EventBus.getDefault().post(EventBusMSG.ERROR_FILE_ALREADY_EXISTS);
                                 mBluetooth.SendMessage("$DFQ");
                                 startCommTimeout();
                                 return;
@@ -735,6 +736,7 @@ public class AirDataBridgeApplication extends Application {
                         for (LogFile lgf : LogfileList_Remote) {
                             if (filenameext.equals(lgf.Name + "." + lgf.Extension)) {
                                 existing = true;
+                                EventBus.getDefault().post(EventBusMSG.ERROR_FILE_ALREADY_EXISTS);
                                 break;
                             }
                         }
@@ -766,8 +768,9 @@ public class AirDataBridgeApplication extends Application {
                 boolean existing = false;
                 synchronized(LogfileList_Local) {
                     for (LogFile lgf : LogfileList_Local) {
-                        if (filenameext.equals(lgf.Name + "." + lgf.Extension)) {
+                        if (filenameext.equals(lgf.LocalName + "." + lgf.Extension)) {
                             existing = true;
+                            EventBus.getDefault().post(EventBusMSG.ERROR_FILE_ALREADY_EXISTS);
                             break;
                         }
                     }

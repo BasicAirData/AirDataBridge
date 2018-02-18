@@ -64,4 +64,6 @@ public class EventBusMSG {
 
     static final short UPDATE_DOWNLOAD_PROGRESS         =  200;
     static final short UPDATE_SETTINGS                  =  201;  // Signal to update (read) preferences
+
+    static final short ERROR_FILE_ALREADY_EXISTS        =  210;  // You are trying to create a file that already exists
 }
