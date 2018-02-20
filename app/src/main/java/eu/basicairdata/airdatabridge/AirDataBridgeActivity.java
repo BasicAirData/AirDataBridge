@@ -57,6 +57,8 @@ public class AirDataBridgeActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private TextView TVStatus;
+    private MenuItem menuNew;
+    private MenuItem menuSync;
 
     private boolean prefKeepScreenOn = true;
 
@@ -66,13 +68,22 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_airdatabridge);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setOffscreenPageLimit(2);
         setupViewPager(mViewPager);
+
+        // When swiping between different sections, select the corresponding tab
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                if (menuNew != null) menuNew.setVisible(position != 0);
+                if (menuSync != null) menuSync.setVisible(position != 0);
+            }
+        });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.id_tablayout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -133,6 +144,15 @@ public class AirDataBridgeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menuNew = menu.findItem(R.id.action_new_logfile);
+        menuNew.setVisible(mViewPager.getCurrentItem() != 0);
+        menuSync = menu.findItem(R.id.action_sync);
+        menuSync.setVisible(mViewPager.getCurrentItem() != 0);
         return true;
     }
 
