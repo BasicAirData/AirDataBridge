@@ -46,4 +46,18 @@
         android:icon="@drawable/ic_add_white_24dp"
         android:title="@string/action_new_logfile"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_enable_realtime_view"
+        android:visible="false"
+        android:orderInCategory="130"
+        android:icon="@drawable/ic_visibility_off_white_24dp"
+        android:title="@string/action_realtime_view"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_disable_realtime_view"
+        android:visible="false"
+        android:orderInCategory="140"
+        android:icon="@drawable/ic_visibility_white_24dp"
+        android:title="@string/action_realtime_view"
+        app:showAsAction="ifRoom" />
 </menu>

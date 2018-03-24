@@ -19,14 +19,11 @@
 
 package eu.basicairdata.airdatabridge;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -51,13 +48,6 @@ public class FragmentRealtime extends Fragment {
     private TextView TVAirViscosity;
     private TextView TVUpdates;
     private TextView TVRealtimeDisabled;
-
-    private ImageView IMGViewStatus;
-
-    private final Bitmap[] bmpVisibility = {
-            BitmapFactory.decodeResource(AirDataBridgeApplication.getInstance().getResources(), R.drawable.ic_visibility_off_black_24dp),
-            BitmapFactory.decodeResource(AirDataBridgeApplication.getInstance().getResources(), R.drawable.ic_visibility_black_24dp)
-    };
 
     final AirDataBridgeApplication ADBApplication = AirDataBridgeApplication.getInstance();
 
@@ -109,23 +99,6 @@ public class FragmentRealtime extends Fragment {
         TVAirViscosity = (TextView) view.findViewById(R.id.id_textView_dynamic_air_viscosity);
 
         TVUpdates = (TextView) view.findViewById(R.id.id_textView_status_hz);
-
-        IMGViewStatus = (ImageView) view.findViewById(R.id.id_imageview_status);
-
-        IMGViewStatus.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {               // Toggle Real Time Data visibility
-                if (isAdded()) {
-                    ADBApplication.setStatusViewEnabled(!ADBApplication.isStatusViewEnabled());
-                    if (ADBApplication.isStatusViewEnabled()) {
-                        EventBus.getDefault().post(EventBusMSG.REQUEST_ENABLE_REALTIME_VIEW);
-                    } else {
-                        EventBus.getDefault().post(EventBusMSG.REQUEST_DISABLE_REALTIME_VIEW);
-                    }
-                }
-            }
-        });
 
         return view;
     }
@@ -185,12 +158,8 @@ public class FragmentRealtime extends Fragment {
                         TVUpdates.setText(getResources().getString(R.string.realtime_update_at_hz, String.valueOf((long)BTFreq)));
                     else
                         TVUpdates.setText(getResources().getString(R.string.realtime_update_at_hz, String.valueOf(BTFreq)));
-                    IMGViewStatus.setImageBitmap(bmpVisibility[1]);
-                    IMGViewStatus.setAlpha(255);
                 } else {
                     TVUpdates.setText(R.string.realtime_disabled);
-                    IMGViewStatus.setImageBitmap(bmpVisibility[0]);
-                    IMGViewStatus.setAlpha(128);
                 }
                 TVRealtimeDisabled.setVisibility(View.INVISIBLE);
 

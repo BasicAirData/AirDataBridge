@@ -25,6 +25,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_new_logfile">New Log</string>
     <string name="action_sync">Sync</string>
+    <string name="action_realtime_view">Realtime View</string>
     <string name="action_about">About</string>
 
     <!-- Tabs -->
@@ -38,8 +39,8 @@
     <string name="differential_pressure">Differential pressure</string>
     <string name="air_density">Air Density</string>
     <string name="air_viscosity">Air Viscosity</string>
-    <string name="realtime_disabled">Disabled</string>
-    <string name="realtime_update_at_hz">Frequency %1$s Hz</string>
+    <string name="realtime_disabled">Realtime View Disabled</string>
+    <string name="realtime_update_at_hz">Data Frequency %1$s Hz</string>
     <string name="realtime_not_connected">Air Data Computer not connected\n\nWhen the ADC is connected\non this tab you can view the data\nin real time</string>
     <string name="sync_no_sync">no sync</string>
     <string name="sync_android_time">Android time</string>

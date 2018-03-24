@@ -377,27 +377,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorCardBackground"
-        android:padding="3dp"
+        android:padding="5dp"
+        android:background="@color/colorBackground"
         tools:context=".FragmentRealtime">
-
-        <ImageView
-            android:id="@+id/id_imageview_status"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_visibility_off_black_24dp"
-            android:padding="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/id_textView_status_hz"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_toLeftOf="@id/id_imageview_status"
-            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:text="@string/realtime_disabled"
-            android:textColor="@color/colorTextStrong"
             android:maxLines="1" />
 
     </RelativeLayout>

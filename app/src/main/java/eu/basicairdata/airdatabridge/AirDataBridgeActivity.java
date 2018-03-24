@@ -59,6 +59,8 @@ public class AirDataBridgeActivity extends AppCompatActivity {
     private TextView TVStatus;
     private MenuItem menuNew;
     private MenuItem menuSync;
+    private MenuItem menuEnableRT;
+    private MenuItem menuDisableRT;
 
     private boolean prefKeepScreenOn = true;
 
@@ -82,6 +84,11 @@ public class AirDataBridgeActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 if (menuNew != null) menuNew.setVisible(position != 0);
                 if (menuSync != null) menuSync.setVisible(position != 0);
+                if (menuEnableRT != null)
+                    menuEnableRT.setVisible((position == 0) && !AirDataBridgeApplication.getInstance().isStatusViewEnabled());
+                if (menuDisableRT != null)
+                    menuDisableRT.setVisible((position == 0) && AirDataBridgeApplication.getInstance().isStatusViewEnabled());
+
             }
         });
 
@@ -153,6 +160,10 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         menuNew.setVisible(mViewPager.getCurrentItem() != 0);
         menuSync = menu.findItem(R.id.action_sync);
         menuSync.setVisible(mViewPager.getCurrentItem() != 0);
+        menuEnableRT = menu.findItem(R.id.action_enable_realtime_view);
+        menuEnableRT.setVisible((mViewPager.getCurrentItem() == 0) && !AirDataBridgeApplication.getInstance().isStatusViewEnabled());
+        menuDisableRT = menu.findItem(R.id.action_disable_realtime_view);
+        menuDisableRT.setVisible((mViewPager.getCurrentItem() == 0) && AirDataBridgeApplication.getInstance().isStatusViewEnabled());
         return true;
     }
 
@@ -167,6 +178,16 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
+            return true;
+        }
+
+        if (item.getItemId() == R.id.action_enable_realtime_view) {
+            EventBus.getDefault().post(EventBusMSG.REQUEST_ENABLE_REALTIME_VIEW);
+            return true;
+        }
+
+        if (item.getItemId() == R.id.action_disable_realtime_view) {
+            EventBus.getDefault().post(EventBusMSG.REQUEST_DISABLE_REALTIME_VIEW);
             return true;
         }
 
@@ -326,6 +347,18 @@ public class AirDataBridgeActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(AirDataBridgeActivity.this, getString(R.string.toast_file_already_exists), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
+            case EventBusMSG.DISABLE_REALTIME_VIEW:
+            case EventBusMSG.ENABLE_REALTIME_VIEW:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (menuEnableRT != null)
+                            menuEnableRT.setVisible((mViewPager.getCurrentItem() == 0) && !AirDataBridgeApplication.getInstance().isStatusViewEnabled());
+                        if (menuDisableRT != null)
+                            menuDisableRT.setVisible((mViewPager.getCurrentItem() == 0) && AirDataBridgeApplication.getInstance().isStatusViewEnabled());
                     }
                 });
                 break;
