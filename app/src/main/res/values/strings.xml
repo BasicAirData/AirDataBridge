@@ -116,7 +116,7 @@
     <string name="hz">Hz</string>
     <string name="m_s">m/s</string>
     <string name="km_h">km/h</string>
-    <string name="degk">K</string>
+    <string name="degc">°C</string>
     <string name="m">m</string>
     <string name="Pa">Pa</string>
     <string name="kg_m3">kg/m³</string>

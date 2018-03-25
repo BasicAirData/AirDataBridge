@@ -144,13 +144,45 @@ public class FragmentRealtime extends Fragment {
                     TVAirspeed2.setText(vv);
                 } else TVAirspeed2.setText("-");
 
-                TVDifferentialPressure.setText(CurrentDTA[7].isEmpty() ? "-" : CurrentDTA[7] + "  " + getString(R.string.Pa));          // Differential Pressure
-                TVAbsolutePressure.setText(CurrentDTA[8].isEmpty() ? "-" : CurrentDTA[8] + "  " + getString(R.string.Pa));              // Absolute Pressure
-                TVTemperature.setText(CurrentDTA[9].isEmpty() ? "-" : CurrentDTA[9]);                   // External Temperature
-                TVAirspeed.setText(CurrentDTA[13].isEmpty() ? "-" : CurrentDTA[13]);                     // TAS
-                TVAltitude.setText(CurrentDTA[14].isEmpty() ? "-" : CurrentDTA[14]);                     // Altitude
-                TVAirDensity.setText(CurrentDTA[21].isEmpty() ? "-" : CurrentDTA[21] + "  " + getString(R.string.kg_m3));                   // Air density
-                TVAirViscosity.setText(CurrentDTA[22].isEmpty() ? "-" : CurrentDTA[22] + "  " + getString(R.string.Paxs));                 // Air viscosity
+                // Differential Pressure
+                TVDifferentialPressure.setText(CurrentDTA[7].isEmpty() ? "-" : CurrentDTA[7] + "  " + getString(R.string.Pa));
+
+                // Absolute Pressure
+                TVAbsolutePressure.setText(CurrentDTA[8].isEmpty() ? "-" : CurrentDTA[8] + "  " + getString(R.string.Pa));
+
+                // External Temperature
+                float temp;
+                try {
+                    float f = Float.parseFloat(CurrentDTA[9]);
+                    temp = f;
+                }
+                catch(NumberFormatException nfe)
+                {
+                    temp = 0;
+                }
+                TVTemperature.setText(CurrentDTA[9].isEmpty() ? "-" : String.format(Locale.ENGLISH, "%.0f", (temp - 273.15)));
+
+                // TAS
+                TVAirspeed.setText(CurrentDTA[13].isEmpty() ? "-" : CurrentDTA[13]);
+
+                // Altitude
+                float alt;
+                try {
+                    float f = Float.parseFloat(CurrentDTA[14]);
+                    alt = f;
+                }
+                catch(NumberFormatException nfe)
+                {
+                    alt = 0;
+                }
+                TVAltitude.setText(CurrentDTA[14].isEmpty() ? "-" : String.format(Locale.ENGLISH, "%.1f", (alt)));
+
+                // Air density
+                TVAirDensity.setText(CurrentDTA[21].isEmpty() ? "-" : CurrentDTA[21] + "  " + getString(R.string.kg_m3));
+
+                // Air viscosity
+                TVAirViscosity.setText(CurrentDTA[22].isEmpty() ? "-" : CurrentDTA[22] + "  " + getString(R.string.Paxs));
+
 
                 if (ADBApplication.isStatusViewEnabled()) {
                     float BTFreq = ADBApplication.getBluetoothDTAFrequency();

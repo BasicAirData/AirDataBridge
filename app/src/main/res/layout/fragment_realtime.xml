@@ -173,7 +173,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearanceLargeUM"
                         android:layout_marginLeft="7dp"
-                        android:text="@string/degk"
+                        android:text="@string/degc"
                         android:layout_marginStart="7dp" />
                 </TableRow>
             </TableLayout>
