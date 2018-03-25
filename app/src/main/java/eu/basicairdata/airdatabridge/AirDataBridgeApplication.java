@@ -686,6 +686,7 @@ public class AirDataBridgeApplication extends Application {
                 break;
             case EventBusMSG.REQUEST_ENABLE_REALTIME_VIEW:
                 //Log.w("myApp", "[#] AirDataBridgeApplication.java - REQUEST_ENABLE_REALTIME_VIEW");
+                CurrentDTA = EMPTY_DTA_MESSAGE;
                 mBluetooth.SendMessage("$DFS,=," + prefBTDataFrequency + ",=");
                 startCommTimeout();
                 break;

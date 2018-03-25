@@ -49,6 +49,7 @@ public class FragmentRealtime extends Fragment {
     private TextView TVUpdates;
     private TextView TVRealtimeDisabled;
 
+
     final AirDataBridgeApplication ADBApplication = AirDataBridgeApplication.getInstance();
 
     public FragmentRealtime() {
@@ -121,8 +122,11 @@ public class FragmentRealtime extends Fragment {
     public void Update() {
         if (isAdded()) {
             if (ADBApplication.getBluetoothConnectionStatus() == EventBusMSG.BLUETOOTH_HEARTBEAT_SYNC) {
-                String[] CurrentDTA = ADBApplication.getCurrentDTA().split(",", -1);
+                String[] CurrentDTA = ADBApplication.isStatusViewEnabled() ?
+                        ADBApplication.getCurrentDTA().split(",", -1):
+                        AirDataBridgeApplication.EMPTY_DTA_MESSAGE.split(",", -1);
 
+                // Time
                 String stime = CurrentDTA[1];
                 if (!stime.isEmpty()) {
                     long localtime = System.currentTimeMillis() / 1000L;       // The Android time
@@ -136,7 +140,11 @@ public class FragmentRealtime extends Fragment {
                     } else {
                         TVTimesync.setText(getString(R.string.sync_no_sync));
                     }
+                } else {
+                    TVDatetime.setText("-");
+                    TVTimesync.setText("-");
                 }
+
                 String sairspeed = CurrentDTA[13];
                 if (!sairspeed.isEmpty()) {
                     float as = Float.parseFloat(sairspeed);
