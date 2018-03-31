@@ -71,6 +71,7 @@ public class AirDataBridgeApplication extends Application {
 
     boolean StoragePermissionChecked = false;
     boolean StoragePermissionGranted = false;
+    boolean BluetoothAutoReconnect = true;                                  // Auto reconnect if disconnected
 
     boolean StatusViewEnabled = false;                                      // If true, the status updates are enabled
     boolean ForceRemoteLST = true;                                          // If true, ask $FMQ,LST also if recording
@@ -118,6 +119,14 @@ public class AirDataBridgeApplication extends Application {
 
     public void setStoragePermissionGranted(boolean storagePermissionGranted) {
         StoragePermissionGranted = storagePermissionGranted;
+    }
+
+    public boolean isBluetoothAutoReconnect() {
+        return BluetoothAutoReconnect;
+    }
+
+    public void setBluetoothAutoReconnect(boolean bluetoothAutoReconnect) {
+        BluetoothAutoReconnect = bluetoothAutoReconnect;
     }
 
     public boolean isStatusViewEnabled() {
@@ -601,8 +610,8 @@ public class AirDataBridgeApplication extends Application {
                     if (isConnected) {
                         BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTED;
                         EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTED);
-                        mBluetooth.SendMessage("$HBQ,AirDataBridge,0.4");
-                        mBluetooth.SendMessage("$HBQ,AirDataBridge,0.4");
+                        mBluetooth.SendMessage("$HBQ,AirDataBridge," + BuildConfig.VERSION_NAME);
+                        mBluetooth.SendMessage("$HBQ,AirDataBridge," + BuildConfig.VERSION_NAME);
                         startCommTimeout();
                         Log.w("myApp", "[#] AirDataBridgeApplication.java - BLUETOOTH_CONNECTED");
                         // Do something
@@ -613,7 +622,7 @@ public class AirDataBridgeApplication extends Application {
                         //}
                         //Log.w("myApp", "[#] AirDataBridgeApplication.java - EventBusMSG.REMOTE_UPDATE_LOGLIST");
                         // Auto reconnect
-                        if (BluetoothConnectionStatus != EventBusMSG.BLUETOOTH_OFF) {
+                        if ((BluetoothConnectionStatus != EventBusMSG.BLUETOOTH_OFF) && (BluetoothAutoReconnect)) {
                             BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTING;
                             EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTING);
                             mBluetooth.Connect(BluetoothDeviceName);
@@ -655,6 +664,23 @@ public class AirDataBridgeApplication extends Application {
     @Subscribe
     public void onEvent(Short msg) {
         switch (msg) {
+            case EventBusMSG.START_APP:
+                if (!BluetoothAutoReconnect) {
+                    BluetoothAutoReconnect = true;
+                    if (mBluetoothAdapter.isEnabled()) {
+                        BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_CONNECTING;
+                        EventBus.getDefault().post(EventBusMSG.BLUETOOTH_CONNECTING);
+                        mBluetooth.Connect(BluetoothDeviceName);
+                    } else {
+                        BluetoothConnectionStatus = EventBusMSG.BLUETOOTH_OFF;
+                        EventBus.getDefault().post(EventBusMSG.BLUETOOTH_OFF);
+                    }
+                }
+                break;
+            case EventBusMSG.EXIT_APP:
+                BluetoothAutoReconnect = false;
+                mBluetooth.Disconnect();
+                break;
             case EventBusMSG.STORAGE_PERMISSION_GRANTED:
                 StoragePermissionGranted = true;
                 // Create folder if not exists

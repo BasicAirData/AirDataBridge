@@ -66,4 +66,7 @@ public class EventBusMSG {
     static final short UPDATE_SETTINGS                  =  201;  // Signal to update (read) preferences
 
     static final short ERROR_FILE_ALREADY_EXISTS        =  210;  // You are trying to create a file that already exists
+
+    static final short START_APP                        =  254;  // Start the app
+    static final short EXIT_APP                         =  255;  // Close the app
 }

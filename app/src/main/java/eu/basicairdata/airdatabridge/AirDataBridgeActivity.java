@@ -96,6 +96,8 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setupWithViewPager(mViewPager);
 
+        EventBus.getDefault().post(EventBusMSG.START_APP);
+
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +140,13 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         super.onPause();
     }
 
+
+    @Override
+    public void onBackPressed() {
+        //moveTaskToBack(true);
+        EventBus.getDefault().post(EventBusMSG.EXIT_APP);
+        finish();
+    }
 
 
     @Override
