@@ -1,4 +1,4 @@
-# Air Data Bridge
+# Air Data Bridge<br>[![Releases](http://img.shields.io/github/release/BasicAirData/AirDataBridge.svg?label=%20release%20)](https://github.com/BasicAirData/AirDataBridge/releases) [![GitHub license](https://img.shields.io/badge/license-GPL_3-blue.svg?label=%20license%20)](https://raw.githubusercontent.com/BasicAirData/GPSLogger/master/LICENSE)
 
 The Air Data Computer connection software for Android mobile devices.<br>
 Offered by [BasicAirData](http://www.basicairdata.eu) - Open and free DIY air data instrumentation and telemetry.
@@ -12,9 +12,7 @@ Using this app you can connect with the Air Data Computer on-the-field via Bluet
 
 This application is made to work with the BasicAirData [Asgard Air Data Computer](https://www.basicairdata.eu/projects/airdatacomputer/asgard-adc/).
 
-The Bluetooth interface is been made using the [BluetoothHelper](https://github.com/BasicAirData/BluetoothHelper) wireless communication layer for Android.
-
-_This is a fully functional work in progress: the main basic functionalities are already implemented; we are adding other features and options in order to offer to the users a simple, but complete application._
+The Bluetooth interface is made using the [BluetoothHelper](https://github.com/BasicAirData/BluetoothHelper) wireless communication layer for Android.
 
 The app is 100% Free and Open Source.
 
