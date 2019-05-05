@@ -31,6 +31,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -257,6 +258,10 @@ public class AirDataBridgeApplication extends Application {
     public void onCreate() {
         super.onCreate();
         singleton = this;
+
+        // work around the android.os.FileUriExposedException
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
         File sd = new File(Environment.getExternalStorageDirectory() + "/AirDataBridge");   // Create the Directory if not exist
         if (!sd.exists()) {
