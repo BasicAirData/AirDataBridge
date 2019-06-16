@@ -91,7 +91,7 @@ public class AirDataBridgeActivity extends AppCompatActivity {
         setupViewPager(mViewPager);
 
         // When swiping between different sections, select the corresponding tab
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 if (menuNew != null) menuNew.setVisible(position != 0);
